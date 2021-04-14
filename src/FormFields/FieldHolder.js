@@ -13,26 +13,26 @@ const FieldHolder = (props) => {
     children,
   } = props;
 
-  let validationState;
+  let validationstate;
   if (
     (data && data.error ? data.error : error) &&
     (touched || showErrorBeforeTouched)
   ) {
-    validationState = 'error';
+    validationstate = 'error';
   } else if (
     (data && data.warning ? data.warning : warning) &&
     (touched || showWarningBeforeTouched)
   ) {
-    validationState = 'warning';
+    validationstate = 'warning';
   }
 
   return (
-    <FormGroup controlId={name} validationState={validationState}>
+    <FormGroup controlId={name} validationstate={validationstate}>
       {tooltip && <Help input={name} text={tooltip} />}
       {children}
-      {validationState && (
+      {validationstate && (
         <FormLabel
-          className={`section-textarea__message ${validationState}`}
+          className={`section-textarea__message ${validationstate}`}
         ></FormLabel>
       )}
     </FormGroup>

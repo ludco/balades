@@ -27,3 +27,17 @@ code {
 .navbar-brand {
   color: white;
 }
+.nav-link {
+  cursor: pointer;
+}
+
+.link {
+  color: $link-color;
+  background-color: transparent;
+  cursor: pointer;
+  -webkit-text-decoration-skip: objects;
+  &:hover {
+    color: $link-hover-color;
+    text-decoration: underline;
+  }
+}

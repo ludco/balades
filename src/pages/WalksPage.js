@@ -1,4 +1,4 @@
-import { db, auth } from '../firebase.config';
+import { db } from '../firebase.config';
 import React, { useState, useEffect } from 'react';
 import { WalksList } from '../components/WalksList';
 import { WalkForm } from '../components/WalkForm';
@@ -10,6 +10,9 @@ export const WalksPage = () => {
     fetchWalks();
   }, []);
 
+  /**
+   * Get Walks documents from firebase
+   */
   const fetchWalks = async () => {
     try {
       const response = await db.collection('balades');

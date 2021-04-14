@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Collapse,
   Navbar,
@@ -13,8 +13,11 @@ import {
   DropdownItem,
   NavbarText,
 } from 'reactstrap';
+import { UserContext } from '../providers/UserProvider';
+import { auth } from '../firebase.config';
 
-export const Header = (props) => {
+export const Header = ({ history }) => {
+  const userCtxt = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -42,7 +45,19 @@ export const Header = (props) => {
             </UncontrolledDropdown>
           </Nav>
           <NavbarText>
-            <NavLink href="/signin">Connexion</NavLink>
+            {userCtxt.user && userCtxt.user.email ? (
+              <NavLink
+                href="/"
+                onClick={() => {
+                  auth.signOut();
+                  userCtxt.setUser({});
+                }}
+              >
+                {userCtxt.displayName} - Déconnexion
+              </NavLink>
+            ) : (
+              <NavLink href="/signin">Connexion</NavLink>
+            )}
           </NavbarText>
         </Collapse>
       </Navbar>
