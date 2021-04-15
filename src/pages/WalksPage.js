@@ -28,9 +28,6 @@ export const WalksPage = () => {
   };
 
   return (
-    <Container>
-      {walks.length && <WalksList walks={walks} />}
-      <WalkForm />
-    </Container>
+    <Container>{walks.length > 0 && <WalksList walks={walks} />}</Container>
   );
 };

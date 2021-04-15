@@ -1,10 +1,17 @@
-import React, { createContext, useState } from 'react';
-import db from '../firebase.config';
+import React, { createContext, useEffect, useState } from 'react';
+import { auth, db } from '../firebase.config';
 
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
   const [user, setUser] = useState({});
+  console.log('user:', user);
+
+  useEffect(() => {
+    auth.onAuthStateChanged((userAuth) => {
+      getUserDocument(userAuth.uid).then((res) => setUser(res));
+    });
+  }, []);
 
   /**
    * Generate firebase User Document (signUp)
@@ -54,6 +61,7 @@ const UserProvider = ({ children }) => {
         user,
         setUser,
         generateUserDocument,
+        getUserDocument,
       }}
     >
       {children}

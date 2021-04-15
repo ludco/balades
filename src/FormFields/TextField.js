@@ -4,7 +4,7 @@ import { FormControl } from 'react-bootstrap';
 import FieldHolder from './FieldHolder';
 
 const TextField = (props) => {
-  const { placeholder, input, readOnly, type, bsClass, disabled } = props;
+  const { placeholder, input, readOnly, type, bsclass, disabled } = props;
 
   return (
     <FieldHolder {...props}>
@@ -12,7 +12,7 @@ const TextField = (props) => {
         type={type}
         placeholder={placeholder}
         readOnly={readOnly}
-        bsClass={bsClass}
+        bsclass={bsclass}
         disabled={disabled}
         {...input}
       />

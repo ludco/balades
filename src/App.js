@@ -5,6 +5,7 @@ import { SignInPage } from './pages/SignInPage';
 import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
 import UserProvider from './providers/UserProvider';
 import { SignUpPage } from './pages/SignUpPage';
+import { WalksAddition } from './pages/WalkAddition';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Header></Header>
         <Switch>
           <Route exact path="/" component={WalksPage} />
+          <Route exact path="/add" component={WalksAddition} />
           <Route exact path="/signin" component={SignInPage} />
           <Route exact path="/signup" component={SignUpPage} />
         </Switch>

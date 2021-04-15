@@ -19,6 +19,7 @@ import { auth } from '../firebase.config';
 export const Header = ({ history }) => {
   const userCtxt = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
+  console.log('userinheader', userCtxt.user);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -32,33 +33,33 @@ export const Header = ({ history }) => {
             <NavItem>
               <NavLink href="/">Toutes les balades</NavLink>
             </NavItem>
-            <UncontrolledDropdown nav inNavbar>
-              <DropdownToggle nav caret>
-                Trier
-              </DropdownToggle>
-              <DropdownMenu right>
-                <DropdownItem>par secteur</DropdownItem>
-                <DropdownItem>par difficulté</DropdownItem>
-                <DropdownItem divider />
-                <DropdownItem>Reset</DropdownItem>
-              </DropdownMenu>
-            </UncontrolledDropdown>
           </Nav>
-          <NavbarText>
+          <Nav className="ml-auto" navbar>
             {userCtxt.user && userCtxt.user.email ? (
-              <NavLink
-                href="/"
-                onClick={() => {
-                  auth.signOut();
-                  userCtxt.setUser({});
-                }}
-              >
-                {userCtxt.displayName} - Déconnexion
-              </NavLink>
+              <UncontrolledDropdown nav inNavbar className="me-auto">
+                <DropdownToggle nav caret>
+                  {userCtxt.user.displayName}
+                </DropdownToggle>
+                <DropdownMenu right>
+                  <DropdownItem href="/add">Ajouter une balade</DropdownItem>
+                  <DropdownItem divider />
+                  <DropdownItem
+                    href="/"
+                    onClick={() => {
+                      auth.signOut();
+                      userCtxt.setUser({});
+                    }}
+                  >
+                    déconnexion <i className="bi bi-power"></i>
+                  </DropdownItem>
+                </DropdownMenu>
+              </UncontrolledDropdown>
             ) : (
-              <NavLink href="/signin">Connexion</NavLink>
+              <NavItem>
+                <NavLink href="/signin">Connexion</NavLink>
+              </NavItem>
             )}
-          </NavbarText>
+          </Nav>
         </Collapse>
       </Navbar>
     </div>

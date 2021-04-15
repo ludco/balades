@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { Field, Form } from 'react-final-form';
-import { Button, Card, CardBody, CardHeader, Col, Row } from 'reactstrap';
+import { Button, Card, CardBody, CardHeader, Col } from 'reactstrap';
 import TextField from '../FormFields/TextField';
 import { auth, provider } from '../firebase.config';
 import { UserContext } from '../providers/UserProvider';
@@ -18,12 +18,12 @@ export const SignInPage = ({ history }) => {
   const signInWithEmailAndPasswordHandler = async (event) => {
     auth
       .signInWithEmailAndPassword(event.email, event.password)
-      .then((res) => userCtxt.setUser(res.user))
       .catch((err) => {
         setError('Les identifiants ne correspondent pas.');
         console.error('Error signing in with password and email', err);
       });
     setUser(userInitialState);
+    history.push('/');
   };
 
   /**
