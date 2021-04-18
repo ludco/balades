@@ -1,31 +1,15 @@
-import { db } from '../firebase.config';
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { WalksList } from '../components/WalksList';
-import { WalkForm } from '../components/WalkForm';
 import { Container } from 'reactstrap';
+import { useDispatch, useSelector } from 'react-redux';
+import { getWalks } from '../actions';
 
 export const WalksPage = () => {
-  const [walks, setWalk] = useState([]);
+  const dispatch = useDispatch();
+  const walks = useSelector((state) => state.walks);
   useEffect(() => {
-    fetchWalks();
+    if (!walks.lenght) dispatch(getWalks());
   }, []);
-
-  /**
-   * Get Walks documents from firebase
-   */
-  const fetchWalks = async () => {
-    try {
-      const response = await db.collection('balades');
-      const data = await response.get();
-      const walksArray = [];
-      data.docs.forEach((item) => {
-        walksArray.push(item.data());
-      });
-      setWalk(walksArray);
-    } catch (e) {
-      console.log(e);
-    }
-  };
 
   return (
     <Container>{walks.length > 0 && <WalksList walks={walks} />}</Container>

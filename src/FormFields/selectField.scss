@@ -1,0 +1,22 @@
+@import '../../style/variables';
+select {
+  border: 1px solid $grey-formfields;
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  -ms-appearance: none;
+  background: url('../../img/arrow-down.svg');
+  background-repeat: no-repeat;
+  background-size: 1rem;
+  background-position: calc(100% - 0.5rem) center;
+  background-color: white;
+  &:focus {
+    background-color: #fff;
+    border-color: #368ece;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(26, 73, 107, 0.25);
+  }
+}
+select::-ms-expand {
+  display: none;
+}

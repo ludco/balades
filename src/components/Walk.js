@@ -7,8 +7,9 @@ import {
   CardTitle,
   CardSubtitle,
   CardText,
-  Button,
 } from 'reactstrap';
+import { BsStopwatch } from 'react-icons/bs';
+import { MdPlace } from 'react-icons/md';
 
 export const Walk = ({ walk }) => {
   return (
@@ -22,10 +23,16 @@ export const Walk = ({ walk }) => {
             <CardTitle tag="h5">{walk.name}</CardTitle>
 
             <CardSubtitle tag="h6" className="mb-2 text-muted">
-              Difficulté : {walk.difficulty}
+              <span>Difficulté : {walk.difficulty}</span>
+              <span className="ml-4">
+                <BsStopwatch /> {walk.time}h
+              </span>
             </CardSubtitle>
             <CardText>{walk.description}</CardText>
-            <Button color="primary">Ajouter aux favoris</Button>
+            <CardSubtitle>
+              <MdPlace />
+              <span className="ml-1">{walk.sector}</span>
+            </CardSubtitle>
           </Col>
         </Row>
       </CardBody>

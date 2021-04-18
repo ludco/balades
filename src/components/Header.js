@@ -15,11 +15,11 @@ import {
 } from 'reactstrap';
 import { UserContext } from '../providers/UserProvider';
 import { auth } from '../firebase.config';
+import { Link } from 'react-router-dom';
 
 export const Header = ({ history }) => {
   const userCtxt = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
-  console.log('userinheader', userCtxt.user);
 
   const toggle = () => setIsOpen(!isOpen);
 
@@ -31,7 +31,7 @@ export const Header = ({ history }) => {
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
             <NavItem>
-              <NavLink href="/">Toutes les balades</NavLink>
+              <Link to="/">Toutes les balades</Link>
             </NavItem>
           </Nav>
           <Nav className="ml-auto" navbar>
@@ -41,7 +41,11 @@ export const Header = ({ history }) => {
                   {userCtxt.user.displayName}
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem href="/add">Ajouter une balade</DropdownItem>
+                  <DropdownItem>
+                    <Link to="/add" className="link">
+                      Ajouter une balade
+                    </Link>
+                  </DropdownItem>
                   <DropdownItem divider />
                   <DropdownItem
                     href="/"
@@ -56,7 +60,7 @@ export const Header = ({ history }) => {
               </UncontrolledDropdown>
             ) : (
               <NavItem>
-                <NavLink href="/signin">Connexion</NavLink>
+                <Link to="/signin">Connexion</Link>
               </NavItem>
             )}
           </Nav>

@@ -24,6 +24,15 @@ code {
   margin: auto;
 }
 
+a {
+  color: rgb(218, 218, 218);
+  text-decoration: none;
+  &:hover {
+    color: $link-hover-color;
+    text-decoration: none;
+  }
+}
+
 .navbar-brand {
   color: white;
 }
@@ -38,6 +47,5 @@ code {
   -webkit-text-decoration-skip: objects;
   &:hover {
     color: $link-hover-color;
-    text-decoration: underline;
   }
 }

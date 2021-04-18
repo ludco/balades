@@ -4,9 +4,11 @@ import { Button, Card, CardBody, CardHeader, Col } from 'reactstrap';
 import TextField from '../FormFields/TextField';
 import { auth } from '../firebase.config';
 import { UserContext } from '../providers/UserProvider';
+import { addUser } from '../actions';
+import { useDispatch } from 'react-redux';
 
 export const SignUpPage = ({ history }) => {
-  const userCtxt = useContext(UserContext);
+  const dispatch = useDispatch();
   const UserInitialState = { email: '', displayName: '', password: '' };
   const [error, setError] = useState(null);
 
@@ -21,7 +23,8 @@ export const SignUpPage = ({ history }) => {
         event.email,
         event.password
       );
-      userCtxt.generateUserDocument(user, { displayName: event.displayName });
+      const additionalDatas = { displayName: event.displayName };
+      dispatch(addUser(user, additionalDatas));
       history.push('/');
     } catch (err) {
       setError(
