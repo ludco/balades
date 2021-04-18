@@ -7,6 +7,9 @@ import './style/style.scss';
 import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store';
+import { createBrowserHistory } from 'history';
+
+export const browserHistory = createBrowserHistory();
 
 const store = configureStore();
 

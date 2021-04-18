@@ -17,7 +17,6 @@ export const SignUpPage = ({ history }) => {
    * @param {Object} event
    */
   const signUpWithEmailAndPasswordHandler = async (event) => {
-    console.log('event', event);
     try {
       const { user } = await auth.createUserWithEmailAndPassword(
         event.email,

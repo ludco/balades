@@ -3,10 +3,13 @@ import 'firebase/storage';
 import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap';
 import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
-import { storage, db } from '../firebase.config';
 import CheckboxField from '../FormFields/CheckboxField';
+import { useDispatch } from 'react-redux';
+import { addWalk } from '../actions';
+import { storage } from '../firebase.config';
 
-export const WalkForm = () => {
+export const WalkForm = ({ history }) => {
+  const dispatch = useDispatch();
   const [newWalk, setNewWalk] = useState({
     name: '',
     difficulty: '',
@@ -24,12 +27,11 @@ export const WalkForm = () => {
    * Handle pic upload to firebase, get pic url and add walk document to firebase db
    * @param {Object} walkToAdd
    */
-  const doCreateWalk = (walkToAdd) => {
+  const doCreateWalk = (walk) => {
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       return;
     }
-
     const uploadTask = storage
       .ref(`/pics/${imageAsFile.name}`)
       .put(imageAsFile);
@@ -53,19 +55,16 @@ export const WalkForm = () => {
           .child(imageAsFile.name)
           .getDownloadURL()
           .then((fireBaseUrl) => {
-            db.collection('balades')
-              .doc()
-              .set({ ...walkToAdd, pics: [fireBaseUrl] })
-              .then(() => {
-                console.log('Document successfully written!');
-              })
-              .catch((error) => {
-                console.error('Error writing document: ', error);
-              });
+            try {
+              dispatch(addWalk(walk, fireBaseUrl, history));
+            } catch (e) {
+              console.error('Error saving walk', e);
+            }
           });
       }
     );
   };
+
   return (
     <Card className="signin mt-5">
       <CardHeader>
