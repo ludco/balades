@@ -13,9 +13,27 @@ code {
     monospace;
 }
 
+.react-icons {
+  font-size: 1.2rem;
+}
+.delete {
+  font-size: 2rem;
+  position: relative;
+  bottom: 2.7rem;
+  right: 1rem;
+}
+.delete .react-icons {
+  font-size: 1.7rem;
+}
+
 .pic {
   width: 10rem;
   height: 10rem;
+  object-fit: cover;
+}
+.minpic {
+  width: 5rem;
+  height: 5rem;
   object-fit: cover;
 }
 

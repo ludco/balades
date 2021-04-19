@@ -5,17 +5,27 @@ import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch } from 'react-redux';
-import { addWalk } from '../actions';
+import { addWalk, editWalk } from '../actions';
 import { storage } from '../firebase.config';
+import { TiDelete } from 'react-icons/ti';
+import AlertModal from './AlertModal';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
+  const [walkToUpdate, setWalkToUpdate] = useState(history.location.state);
   const [newWalk, setNewWalk] = useState({
     name: '',
     difficulty: '',
     description: '',
     pics: [],
   });
+  const [isOpen, setIsOpen] = useState(false);
+  const deletePicModal = {
+    title: 'Confirmation',
+    content: 'Etes-vous sûr de vouloir supprimer cette photo ?',
+    primary: 'supprimer',
+    secondary: 'annuler',
+  };
 
   const [imageAsFile, setImageAsFile] = useState('');
 
@@ -56,13 +66,41 @@ export const WalkForm = ({ history }) => {
           .getDownloadURL()
           .then((fireBaseUrl) => {
             try {
-              dispatch(addWalk(walk, fireBaseUrl, history));
+              dispatch(
+                walkToUpdate
+                  ? editWalk(
+                      walk,
+                      { name: imageAsFile.name, url: fireBaseUrl },
+                      history
+                    )
+                  : addWalk(
+                      walk,
+                      { name: imageAsFile.name, url: fireBaseUrl },
+                      history
+                    )
+              );
             } catch (e) {
               console.error('Error saving walk', e);
             }
           });
       }
     );
+  };
+
+  const deletePic = () => {
+    const picRef = storage.ref('pics').child(`${walkToUpdate.pics[0].name}`);
+    picRef
+      .delete()
+      .then(() => setWalkToUpdate({ ...walkToUpdate, pics: [] }))
+      .catch((e) => console.error('Error deleting picture'));
+
+    dispatch(editWalk(walkToUpdate, { url: '', name: '' }, null));
+    setImageAsFile('');
+    setIsOpen(false);
+  };
+
+  const doUpdateWalk = (walk) => {
+    dispatch(editWalk(walk, null, history));
   };
 
   return (
@@ -72,8 +110,14 @@ export const WalkForm = ({ history }) => {
       </CardHeader>
       <CardBody>
         <Form
-          initialValues={newWalk}
-          onSubmit={(event) => doCreateWalk({ ...event })}
+          initialValues={walkToUpdate ? walkToUpdate : newWalk}
+          onSubmit={(event) =>
+            walkToUpdate
+              ? imageAsFile
+                ? doCreateWalk({ ...walkToUpdate, ...event })
+                : doUpdateWalk({ ...walkToUpdate, ...event })
+              : doCreateWalk({ ...event })
+          }
           onChange={(event) => setNewWalk(event)}
         >
           {({ handleSubmit, handleChange }) => (
@@ -92,6 +136,8 @@ export const WalkForm = ({ history }) => {
                 name="description"
                 component={TextField}
                 placeholder="Description"
+                as="textarea"
+                rows={3}
               />
               <Field
                 name="sector"
@@ -111,6 +157,24 @@ export const WalkForm = ({ history }) => {
                 component={CheckboxField}
                 placeholder="Carrossable ?"
               />
+              {walkToUpdate && (
+                <>
+                  {walkToUpdate.pics.length > 0 && (
+                    <>
+                      <img
+                        className="minpic"
+                        src={walkToUpdate.pics[0]?.url}
+                        alt={walkToUpdate.name}
+                      />
+                      <TiDelete
+                        className="delete link"
+                        onClick={() => setIsOpen(true)}
+                      />
+                    </>
+                  )}
+                </>
+              )}
+
               <Row>
                 <Col>Ajouter une photo :</Col>
               </Row>
@@ -121,12 +185,20 @@ export const WalkForm = ({ history }) => {
               </Row>
               <Row>
                 <Col className="text-center mt-4">
-                  <Button>Ajouter</Button>
+                  <Button>{walkToUpdate ? 'Mettre à jour' : 'Ajouter'}</Button>
                 </Col>
               </Row>
             </form>
           )}
         </Form>
+        {isOpen && (
+          <AlertModal
+            isOpen={isOpen}
+            content={deletePicModal}
+            doPrimary={() => deletePic()}
+            doSecondary={() => setIsOpen(false)}
+          />
+        )}
       </CardBody>
     </Card>
   );

@@ -11,7 +11,8 @@ export const fetchWalks = async () => {
     const data = await response.get();
     const walksArray = [];
     data.docs.forEach((item) => {
-      walksArray.push(item.data());
+      const fetchedWalk = { id: item.id, ...item.data() };
+      walksArray.push(fetchedWalk);
     });
     return walksArray;
   } catch (e) {
@@ -21,14 +22,14 @@ export const fetchWalks = async () => {
 /**
  * Create Walk document
  * @param {Object} walkToAdd
- * @param {String} fireBaseUrl
+ * @param {String} imageData
  * @returns
  */
-export const createWalk = async (walkToAdd, fireBaseUrl) => {
+export const createWalk = async (walkToAdd, imageData) => {
   try {
     const walkRef = await db
       .collection('balades')
-      .add({ ...walkToAdd, pics: [fireBaseUrl] });
+      .add({ ...walkToAdd, pics: [imageData] });
     console.log('Document successfully written!');
 
     return getWalkDocument(walkRef.id);
@@ -52,6 +53,31 @@ export const getWalkDocument = async (id) => {
     };
   } catch (error) {
     console.error('Error fetching walk', error);
+  }
+};
+
+/**
+ * Update Walk document by id
+ * @param {string} id
+ * @param {Object} walkToUpdate
+ * @returns
+ */
+export const updateWalk = async (walkToUpdate, imageData) => {
+  try {
+    var walkRef = db.collection('balades').doc(`${walkToUpdate.id}`);
+    if (imageData) {
+      walkRef.update({
+        ...walkToUpdate,
+        pics: [imageData],
+      });
+    } else {
+      walkRef.update({
+        ...walkToUpdate,
+      });
+    }
+    return getWalkDocument(walkToUpdate.id);
+  } catch (e) {
+    console.error('Error updating walk', e);
   }
 };
 

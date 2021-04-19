@@ -7,20 +7,46 @@ import {
   CardTitle,
   CardSubtitle,
   CardText,
+  Button,
 } from 'reactstrap';
 import { BsStopwatch } from 'react-icons/bs';
 import { MdPlace } from 'react-icons/md';
+import { BiEdit } from 'react-icons/bi';
+import defaut from '../assets/defaut.jpg';
 
-export const Walk = ({ walk }) => {
+export const Walk = ({ walk, history }) => {
   return (
     <Card>
       <CardBody>
         <Row>
           <Col sm="3">
-            <img className="pic" src={walk.pics[0]} alt={`${walk.name} `} />
+            {walk.pics[0]?.url ? (
+              <img
+                className="pic"
+                src={walk.pics[0]?.url}
+                alt={`${walk.name} `}
+              />
+            ) : (
+              <img
+                className="pic"
+                src={defaut}
+                alt={'rando'}
+                width="100"
+                height="100"
+              />
+            )}
           </Col>
           <Col>
-            <CardTitle tag="h5">{walk.name}</CardTitle>
+            <Row>
+              <Col>
+                <CardTitle tag="h5">{walk.name}</CardTitle>
+              </Col>
+              <Col className="text-right">
+                <Button color="link" onClick={() => history.push('/add', walk)}>
+                  <BiEdit />
+                </Button>
+              </Col>
+            </Row>
 
             <CardSubtitle tag="h6" className="mb-2 text-muted">
               <span>Difficulté : {walk.difficulty}</span>

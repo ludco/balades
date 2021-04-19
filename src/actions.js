@@ -1,10 +1,16 @@
-import { LOAD_WALKS, ADD_WALK, LOAD_USER } from './constants/action-types';
+import {
+  LOAD_WALKS,
+  ADD_WALK,
+  LOAD_USER,
+  UPDATE_WALK,
+} from './constants/action-types';
 import { auth } from './firebase.config';
 import {
   fetchWalks,
   generateUserDocument,
   getUserDocument,
   createWalk,
+  updateWalk,
 } from './firebaseRequests';
 
 export function getWalks() {
@@ -15,11 +21,20 @@ export function getWalks() {
   };
 }
 
-export function addWalk(walkToAdd, imageUrl, history) {
+export function addWalk(walkToAdd, imageData, history) {
   return async function (dispatch) {
-    return createWalk(walkToAdd, imageUrl).then((res) => {
+    return createWalk(walkToAdd, imageData).then((res) => {
       dispatch({ type: ADD_WALK, payload: res });
       history.push('/');
+    });
+  };
+}
+
+export function editWalk(walkToUpdate, imageData, history) {
+  return async function (dispatch) {
+    return updateWalk(walkToUpdate, imageData).then((res) => {
+      dispatch({ type: UPDATE_WALK, payload: res });
+      if (history) history.push('/');
     });
   };
 }

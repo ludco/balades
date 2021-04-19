@@ -1,4 +1,9 @@
-import { LOAD_WALKS, ADD_WALK, LOAD_USER } from './constants/action-types';
+import {
+  LOAD_WALKS,
+  ADD_WALK,
+  UPDATE_WALK,
+  LOAD_USER,
+} from './constants/action-types';
 
 const initialState = {
   user: null,
@@ -25,6 +30,17 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       walks: state.walks.concat(action.payload),
+      loading: false,
+    };
+  }
+  if (action.type === UPDATE_WALK) {
+    const index = state.walks.findIndex(
+      (walk) => walk.id === action.payload.id
+    );
+    state.walks[index] = action.payload;
+    return {
+      ...state,
+      walks: state.walks,
       loading: false,
     };
   }

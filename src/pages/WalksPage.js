@@ -4,7 +4,7 @@ import { Container } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { getWalks } from '../actions';
 
-export const WalksPage = () => {
+export const WalksPage = ({ history }) => {
   const dispatch = useDispatch();
   const { walks, loading } = useSelector((state) => state);
 
@@ -15,6 +15,8 @@ export const WalksPage = () => {
     return 'loading';
   }
   return (
-    <Container>{walks.length > 0 && <WalksList walks={walks} />}</Container>
+    <Container>
+      {walks.length > 0 && <WalksList walks={walks} history={history} />}
+    </Container>
   );
 };
