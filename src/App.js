@@ -7,8 +7,13 @@ import UserProvider from './providers/UserProvider';
 import { SignUpPage } from './pages/SignUpPage';
 import { WalksAddition } from './pages/WalkAddition';
 import { IconContext } from 'react-icons/lib';
+import { useDispatch } from 'react-redux';
+import { getSettings } from './actions';
 
 function App() {
+  const dispatch = useDispatch();
+  dispatch(getSettings());
+
   return (
     <IconContext.Provider value={{ className: 'react-icons' }}>
       <UserProvider>

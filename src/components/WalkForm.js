@@ -4,14 +4,16 @@ import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap';
 import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { addWalk, editWalk } from '../actions';
 import { storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
+import SelectField from '../FormFields/SelectField';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
+  // Walk
   const [walkToUpdate, setWalkToUpdate] = useState(history.location.state);
   const [newWalk, setNewWalk] = useState({
     name: '',
@@ -19,6 +21,14 @@ export const WalkForm = ({ history }) => {
     description: '',
     pics: [],
   });
+  //Settings
+  const difficulties = useSelector((state) => state.settings).find(
+    (setting) => setting.difficulty
+  );
+  const options = difficulties.difficulty.map((diff) => {
+    return { key: diff, text: diff };
+  });
+  // Modal
   const [isOpen, setIsOpen] = useState(false);
   const deletePicModal = {
     title: 'Confirmation',
@@ -26,9 +36,8 @@ export const WalkForm = ({ history }) => {
     primary: 'supprimer',
     secondary: 'annuler',
   };
-
+  //Pic
   const [imageAsFile, setImageAsFile] = useState('');
-
   const handleImageAsFile = (e) => {
     setImageAsFile(e.target.files[0]);
   };
@@ -87,6 +96,9 @@ export const WalkForm = ({ history }) => {
     );
   };
 
+  /**
+   * Delete picture from storage, update walk document
+   */
   const deletePic = () => {
     const picRef = storage.ref('pics').child(`${walkToUpdate.pics[0].name}`);
     picRef
@@ -99,6 +111,10 @@ export const WalkForm = ({ history }) => {
     setIsOpen(false);
   };
 
+  /**
+   * Update walk document without pic change
+   * @param {Object} walk
+   */
   const doUpdateWalk = (walk) => {
     dispatch(editWalk(walk, null, history));
   };
@@ -129,8 +145,9 @@ export const WalkForm = ({ history }) => {
               />
               <Field
                 name="difficulty"
-                component={TextField}
+                component={SelectField}
                 placeholder="Difficulté"
+                options={options}
               />
               <Field
                 name="description"
@@ -159,7 +176,7 @@ export const WalkForm = ({ history }) => {
               />
               {walkToUpdate && (
                 <>
-                  {walkToUpdate.pics.length > 0 && (
+                  {walkToUpdate.pics.length > 0 && walkToUpdate.pics[0]?.url && (
                     <>
                       <img
                         className="minpic"

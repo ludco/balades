@@ -11,7 +11,7 @@ const SelectField = (props) => {
   }
   return (
     <FieldHolder {...props}>
-      <select {...input}>
+      <select {...input} className="form-control select">
         {options.map(({ value, text }) => (
           <option key={`${value}-${text}`} value={value}>
             {text}

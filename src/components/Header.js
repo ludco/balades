@@ -6,12 +6,10 @@ import {
   NavbarBrand,
   Nav,
   NavItem,
-  NavLink,
   UncontrolledDropdown,
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  NavbarText,
 } from 'reactstrap';
 import { UserContext } from '../providers/UserProvider';
 import { auth } from '../firebase.config';

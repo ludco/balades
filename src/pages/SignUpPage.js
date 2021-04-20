@@ -1,9 +1,8 @@
-import React, { useContext, useState } from 'react';
+import React, { useState } from 'react';
 import { Field, Form } from 'react-final-form';
 import { Button, Card, CardBody, CardHeader, Col } from 'reactstrap';
 import TextField from '../FormFields/TextField';
 import { auth } from '../firebase.config';
-import { UserContext } from '../providers/UserProvider';
 import { addUser } from '../actions';
 import { useDispatch } from 'react-redux';
 

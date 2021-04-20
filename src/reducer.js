@@ -3,11 +3,13 @@ import {
   ADD_WALK,
   UPDATE_WALK,
   LOAD_USER,
+  LOAD_SETTINGS,
 } from './constants/action-types';
 
 const initialState = {
   user: null,
   walks: [],
+  settings: [],
   loading: true,
 };
 
@@ -41,6 +43,13 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       walks: state.walks,
+      loading: false,
+    };
+  }
+  if (action.type === LOAD_SETTINGS) {
+    return {
+      ...state,
+      settings: action.payload,
       loading: false,
     };
   }

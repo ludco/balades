@@ -1,11 +1,11 @@
-@import '../../style/variables';
-select {
-  border: 1px solid $grey-formfields;
+@import '../style/variables.scss';
+.select {
+  border: 1px solid grey;
   appearance: none;
   -webkit-appearance: none;
   -moz-appearance: none;
   -ms-appearance: none;
-  background: url('../../img/arrow-down.svg');
+  background: url('../assets/arrow-down.svg');
   background-repeat: no-repeat;
   background-size: 1rem;
   background-position: calc(100% - 0.5rem) center;

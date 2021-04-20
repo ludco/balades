@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { WalksList } from '../components/WalksList';
 import { Container } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';

@@ -1,7 +1,7 @@
-import React, { createContext, useEffect, useState } from 'react';
+import React, { createContext, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUser } from '../actions';
-import { auth, db } from '../firebase.config';
+import { auth } from '../firebase.config';
 
 export const UserContext = createContext();
 

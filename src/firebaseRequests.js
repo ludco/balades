@@ -124,3 +124,23 @@ export const getUserDocument = async (uid) => {
     console.error('Error fetching user', error);
   }
 };
+
+/* ----------------- SETTINGS --------------------- */
+
+/**
+ * Get Walks documents from firebase
+ */
+export const fetchSettings = async () => {
+  try {
+    const response = await db.collection('settings');
+    const data = await response.get();
+    const settings = [];
+    data.docs.forEach((item) => {
+      const fetchedSetting = { id: item.id, ...item.data() };
+      settings.push(fetchedSetting);
+    });
+    return settings;
+  } catch (e) {
+    console.error('Error fetching settings', e);
+  }
+};
