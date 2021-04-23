@@ -15,12 +15,13 @@ import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch, useSelector } from 'react-redux';
-import { addWalk, editWalk } from '../actions';
+import { addWalk, editWalk, getSettings, removeWalk } from '../actions';
 import { storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
 import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
+import { deletePic } from '../firebaseRequests';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
@@ -29,6 +30,7 @@ export const WalkForm = ({ history }) => {
   const [toastVisible, setToastVisible] = useState(toast);
 
   useEffect(() => {
+    if (!difficulties) dispatch(getSettings());
     if (toastVisible.status) {
       setTimeout(() => {
         setToastVisible({ ...toastVisible, status: false });
@@ -72,68 +74,64 @@ export const WalkForm = ({ history }) => {
     dispatch({ type: SET_LOADING_TRUE });
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
-      return;
-    }
-    const uploadTask = storage
-      .ref(`/pics/${imageAsFile.name}`)
-      .put(imageAsFile);
+      dispatch(
+        walkToUpdate
+          ? editWalk(walk, null, history)
+          : addWalk(walk, null, history)
+      );
+    } else {
+      const uploadTask = storage
+        .ref(`/pics/${imageAsFile.name}`)
+        .put(imageAsFile);
 
-    //initiates the firebase side uploading
-    uploadTask.on(
-      'state_changed',
-      (snapShot) => {
-        //takes a snap shot of the process as it is happening
-        console.log('snapshot', snapShot);
-      },
-      (err) => {
-        //catches the errors
-        console.log('upload error', err);
-        dispatch({ type: SET_WARNING_TOAST });
-      },
-      () => {
-        // gets the functions from storage refences the image storage in firebase by the children
-        // gets the download url then sets the image from firebase as the value for the imgUrl key:
-        storage
-          .ref('pics')
-          .child(imageAsFile.name)
-          .getDownloadURL()
-          .then((fireBaseUrl) => {
-            try {
-              dispatch(
-                walkToUpdate
-                  ? editWalk(
-                      walk,
-                      { name: imageAsFile.name, url: fireBaseUrl },
-                      history
-                    )
-                  : addWalk(
-                      walk,
-                      { name: imageAsFile.name, url: fireBaseUrl },
-                      history
-                    )
-              );
-            } catch (e) {
-              console.error('Error saving walk', e);
-              dispatch({ type: SET_WARNING_TOAST });
-            }
-          });
-      }
-    );
+      //initiates the firebase side uploading
+      uploadTask.on(
+        'state_changed',
+        (snapShot) => {
+          //takes a snap shot of the process as it is happening
+          console.log('snapshot', snapShot);
+        },
+        (err) => {
+          //catches the errors
+          console.log('upload error', err);
+          dispatch({ type: SET_WARNING_TOAST });
+        },
+        () => {
+          // gets the functions from storage refences the image storage in firebase by the children
+          // gets the download url then sets the image from firebase as the value for the imgUrl key:
+          storage
+            .ref('pics')
+            .child(imageAsFile.name)
+            .getDownloadURL()
+            .then((fireBaseUrl) => {
+              try {
+                dispatch(
+                  walkToUpdate
+                    ? editWalk(
+                        walk,
+                        { name: imageAsFile.name, url: fireBaseUrl },
+                        history
+                      )
+                    : addWalk(
+                        walk,
+                        { name: imageAsFile.name, url: fireBaseUrl },
+                        history
+                      )
+                );
+              } catch (e) {
+                console.error('Error saving walk', e);
+                dispatch({ type: SET_WARNING_TOAST });
+              }
+            });
+        }
+      );
+    }
   };
 
-  /**
-   * Delete picture from storage, update walk document
-   */
-  const deletePic = () => {
-    const picRef = storage.ref('pics').child(`${walkToUpdate.pics[0].name}`);
-    picRef
-      .delete()
-      .then(() => setWalkToUpdate({ ...walkToUpdate, pics: [] }))
-      .catch((e) => {
-        console.error('Error deleting picture');
-        dispatch({ type: SET_WARNING_TOAST });
-      });
+  const removePic = async () => {
     try {
+      deletePic(walkToUpdate);
+      setWalkToUpdate({ ...walkToUpdate, pics: [] });
       dispatch(editWalk(walkToUpdate, { url: '', name: '' }, null));
       setImageAsFile('');
       setIsOpen(false);
@@ -259,7 +257,7 @@ export const WalkForm = ({ history }) => {
           <AlertModal
             isOpen={isOpen}
             content={deletePicModal}
-            doPrimary={() => deletePic()}
+            doPrimary={() => removePic()}
             doSecondary={() => setIsOpen(false)}
           />
         )}

@@ -4,6 +4,7 @@ import {
   LOAD_USER,
   UPDATE_WALK,
   LOAD_SETTINGS,
+  DELETE_WALK,
 } from './constants/action-types';
 import { auth } from './firebase.config';
 import {
@@ -13,6 +14,7 @@ import {
   createWalk,
   updateWalk,
   fetchSettings,
+  deleteWalk,
 } from './firebaseRequests';
 
 /* ------------------  WALKS  ---------------*/
@@ -38,6 +40,15 @@ export function editWalk(walkToUpdate, imageData, history) {
     return updateWalk(walkToUpdate, imageData).then((res) => {
       dispatch({ type: UPDATE_WALK, payload: res });
       if (history) history.push('/');
+    });
+  };
+}
+
+export function removeWalk(walkToDelete, history) {
+  return async function (dispatch) {
+    return deleteWalk(walkToDelete).then(() => {
+      dispatch({ type: DELETE_WALK, payload: walkToDelete });
+      window.scrollTo(0, 0);
     });
   };
 }

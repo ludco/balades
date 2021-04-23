@@ -6,6 +6,8 @@ import {
   LOAD_SETTINGS,
   SET_LOADING_TRUE,
   SET_WARNING_TOAST,
+  DELETE_WALK,
+  SET_TOAST_TO_FALSE,
 } from './constants/action-types';
 
 const initialState = {
@@ -59,6 +61,22 @@ function rootReducer(state = initialState, action) {
       },
     };
   }
+  if (action.type === DELETE_WALK) {
+    const index = state.walks.findIndex(
+      (walk) => walk.id === action.payload.id
+    );
+    state.walks.splice(index, 1);
+    return {
+      ...state,
+      walks: state.walks,
+      loading: false,
+      toast: {
+        status: true,
+        type: 'success',
+        message: 'Balade supprimée avec succés !',
+      },
+    };
+  }
   if (action.type === LOAD_SETTINGS) {
     return {
       ...state,
@@ -75,10 +93,20 @@ function rootReducer(state = initialState, action) {
   if (action.type === SET_WARNING_TOAST) {
     return {
       ...state,
-      taost: {
+      toast: {
         status: true,
         type: 'warning',
         message: 'Un problème est survenu. Veuillez ré-essayer.',
+      },
+    };
+  }
+  if (action.type === SET_TOAST_TO_FALSE) {
+    return {
+      ...state,
+      toast: {
+        status: false,
+        type: '',
+        message: '',
       },
     };
   }

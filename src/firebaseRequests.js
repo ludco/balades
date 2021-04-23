@@ -1,4 +1,4 @@
-import { db } from './firebase.config';
+import { db, storage } from './firebase.config';
 
 /* ----------------- WALKS --------------------- */
 
@@ -81,6 +81,21 @@ export const updateWalk = async (walkToUpdate, imageData) => {
   }
 };
 
+/**
+ * Delete Walk document by id
+ * @param {string} id
+ * @param {Object} walkToDelete
+ * @returns
+ */
+export const deleteWalk = async (walkToDelete) => {
+  try {
+    var walkRef = db.collection('balades').doc(`${walkToDelete.id}`);
+    walkRef.delete();
+  } catch (e) {
+    console.error('Error deleting walk', e);
+  }
+};
+
 /* ----------------- USER --------------------- */
 
 /**
@@ -143,4 +158,14 @@ export const fetchSettings = async () => {
   } catch (e) {
     console.error('Error fetching settings', e);
   }
+};
+
+/**
+ * Delete picture from storage, update walk document
+ */
+export const deletePic = (walk) => {
+  const picRef = storage.ref('pics').child(`${walk.pics[0].name}`);
+  picRef.delete().catch((e) => {
+    console.error('Error deleting picture');
+  });
 };
