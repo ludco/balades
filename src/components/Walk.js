@@ -19,7 +19,7 @@ export const Walk = ({ walk, history }) => {
     <Card>
       <CardBody>
         <Row>
-          <Col sm="3">
+          <Col md="3" sm="8">
             {walk.pics[0]?.url ? (
               <img
                 className="pic"
@@ -36,7 +36,7 @@ export const Walk = ({ walk, history }) => {
               />
             )}
           </Col>
-          <Col>
+          <Col md="9" sm="12">
             <Row>
               <Col>
                 <CardTitle tag="h5">{walk.name}</CardTitle>

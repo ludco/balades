@@ -1,6 +1,16 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import 'firebase/storage';
-import { Row, Col, Card, CardBody, CardHeader, Button } from 'reactstrap';
+import {
+  Row,
+  Col,
+  Card,
+  CardBody,
+  CardHeader,
+  Button,
+  Spinner,
+  Toast,
+  ToastBody,
+} from 'reactstrap';
 import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
@@ -10,9 +20,28 @@ import { storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
+import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
+  // Toast
+  const toast = useSelector((state) => state.toast);
+  const [toastVisible, setToastVisible] = useState(toast);
+
+  useEffect(() => {
+    if (toastVisible.status) {
+      setTimeout(() => {
+        setToastVisible({ ...toastVisible, status: false });
+      }, 2000);
+    }
+  }, []);
+  //Settings
+  const difficulties = useSelector((state) => state.settings).find(
+    (setting) => setting.difficulty
+  );
+  const options = difficulties.difficulty.map((diff) => {
+    return { key: diff, text: diff };
+  });
   // Walk
   const [walkToUpdate, setWalkToUpdate] = useState(history.location.state);
   const [newWalk, setNewWalk] = useState({
@@ -20,13 +49,6 @@ export const WalkForm = ({ history }) => {
     difficulty: '',
     description: '',
     pics: [],
-  });
-  //Settings
-  const difficulties = useSelector((state) => state.settings).find(
-    (setting) => setting.difficulty
-  );
-  const options = difficulties.difficulty.map((diff) => {
-    return { key: diff, text: diff };
   });
   // Modal
   const [isOpen, setIsOpen] = useState(false);
@@ -41,12 +63,13 @@ export const WalkForm = ({ history }) => {
   const handleImageAsFile = (e) => {
     setImageAsFile(e.target.files[0]);
   };
-
+  const loading = useSelector((state) => state.loading);
   /**
    * Handle pic upload to firebase, get pic url and add walk document to firebase db
    * @param {Object} walkToAdd
    */
   const doCreateWalk = (walk) => {
+    dispatch({ type: SET_LOADING_TRUE });
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       return;
@@ -65,6 +88,7 @@ export const WalkForm = ({ history }) => {
       (err) => {
         //catches the errors
         console.log('upload error', err);
+        dispatch({ type: SET_WARNING_TOAST });
       },
       () => {
         // gets the functions from storage refences the image storage in firebase by the children
@@ -90,6 +114,7 @@ export const WalkForm = ({ history }) => {
               );
             } catch (e) {
               console.error('Error saving walk', e);
+              dispatch({ type: SET_WARNING_TOAST });
             }
           });
       }
@@ -104,11 +129,18 @@ export const WalkForm = ({ history }) => {
     picRef
       .delete()
       .then(() => setWalkToUpdate({ ...walkToUpdate, pics: [] }))
-      .catch((e) => console.error('Error deleting picture'));
-
-    dispatch(editWalk(walkToUpdate, { url: '', name: '' }, null));
-    setImageAsFile('');
-    setIsOpen(false);
+      .catch((e) => {
+        console.error('Error deleting picture');
+        dispatch({ type: SET_WARNING_TOAST });
+      });
+    try {
+      dispatch(editWalk(walkToUpdate, { url: '', name: '' }, null));
+      setImageAsFile('');
+      setIsOpen(false);
+    } catch (e) {
+      console.error('Error updating walk, e');
+      dispatch({ type: SET_WARNING_TOAST });
+    }
   };
 
   /**
@@ -116,11 +148,20 @@ export const WalkForm = ({ history }) => {
    * @param {Object} walk
    */
   const doUpdateWalk = (walk) => {
-    dispatch(editWalk(walk, null, history));
+    try {
+      dispatch(editWalk(walk, null, history));
+    } catch (e) {
+      console.error('Error updating walk', e);
+      dispatch({ type: SET_WARNING_TOAST });
+    }
   };
 
   return (
     <Card className="signin mt-5">
+      <Toast
+        isOpen={toastVisible.status}
+        className={`toast ${toastVisible.type}`}
+      ></Toast>
       <CardHeader>
         <h3>Ajouter une balade</h3>
       </CardHeader>
@@ -202,7 +243,13 @@ export const WalkForm = ({ history }) => {
               </Row>
               <Row>
                 <Col className="text-center mt-4">
-                  <Button>{walkToUpdate ? 'Mettre à jour' : 'Ajouter'}</Button>
+                  {loading ? (
+                    <Spinner color="primary" />
+                  ) : (
+                    <Button>
+                      {walkToUpdate ? 'Mettre à jour' : 'Ajouter'}
+                    </Button>
+                  )}
                 </Col>
               </Row>
             </form>

@@ -4,6 +4,8 @@ import {
   UPDATE_WALK,
   LOAD_USER,
   LOAD_SETTINGS,
+  SET_LOADING_TRUE,
+  SET_WARNING_TOAST,
 } from './constants/action-types';
 
 const initialState = {
@@ -11,6 +13,7 @@ const initialState = {
   walks: [],
   settings: [],
   loading: true,
+  toast: { status: false, type: '', message: '' },
 };
 
 function rootReducer(state = initialState, action) {
@@ -33,6 +36,11 @@ function rootReducer(state = initialState, action) {
       ...state,
       walks: state.walks.concat(action.payload),
       loading: false,
+      toast: {
+        status: true,
+        type: 'success',
+        message: 'Balade ajoutée avec succés !',
+      },
     };
   }
   if (action.type === UPDATE_WALK) {
@@ -44,6 +52,11 @@ function rootReducer(state = initialState, action) {
       ...state,
       walks: state.walks,
       loading: false,
+      toast: {
+        status: true,
+        type: 'success',
+        message: 'Balade modifiée avec succés !',
+      },
     };
   }
   if (action.type === LOAD_SETTINGS) {
@@ -51,6 +64,22 @@ function rootReducer(state = initialState, action) {
       ...state,
       settings: action.payload,
       loading: false,
+    };
+  }
+  if (action.type === SET_LOADING_TRUE) {
+    return {
+      ...state,
+      loading: true,
+    };
+  }
+  if (action.type === SET_WARNING_TOAST) {
+    return {
+      ...state,
+      taost: {
+        status: true,
+        type: 'warning',
+        message: 'Un problème est survenu. Veuillez ré-essayer.',
+      },
     };
   }
 
