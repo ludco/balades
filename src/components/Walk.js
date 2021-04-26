@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Row,
   Col,
@@ -18,9 +18,11 @@ import { deletePic } from '../firebaseRequests';
 import { removeWalk } from '../actions';
 import { useDispatch } from 'react-redux';
 import { SET_WARNING_TOAST } from '../constants/action-types';
+import { UserContext } from '../providers/UserProvider';
 
 export const Walk = ({ walk, history }) => {
   const dispatch = useDispatch();
+  const userCtxt = useContext(UserContext);
   // Modal
   const [isOpen, setIsOpen] = useState(false);
   const deletePicModal = {
@@ -67,14 +69,19 @@ export const Walk = ({ walk, history }) => {
               <Col>
                 <CardTitle tag="h5">{walk.name}</CardTitle>
               </Col>
-              <Col className="text-right">
-                <Button color="link" onClick={() => history.push('/add', walk)}>
-                  <BiEdit />
-                </Button>
-                <Button color="link" onClick={() => setIsOpen(true)}>
-                  <BiTrash />
-                </Button>
-              </Col>
+              {walk.user.id === userCtxt.user.uid && (
+                <Col className="text-right">
+                  <Button
+                    color="link"
+                    onClick={() => history.push('/add', walk)}
+                  >
+                    <BiEdit />
+                  </Button>
+                  <Button color="link" onClick={() => setIsOpen(true)}>
+                    <BiTrash />
+                  </Button>
+                </Col>
+              )}
             </Row>
 
             <CardSubtitle tag="h6" className="mb-2 text-muted">

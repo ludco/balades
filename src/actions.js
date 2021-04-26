@@ -65,7 +65,7 @@ export function addUser(user, additionalDatas) {
 export function getCurrentUser() {
   return function (dispatch) {
     return auth.onAuthStateChanged((userAuth) => {
-      getUserDocument(userAuth.uid).then((res) =>
+      getUserDocument(userAuth?.uid).then((res) =>
         dispatch({ type: LOAD_USER, payload: res })
       );
     });

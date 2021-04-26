@@ -24,10 +24,10 @@ function App() {
         <Router>
           <Header></Header>
           <Switch>
-            <Route exact path="/" component={WalksPage} />
             <Route exact path="/add" component={WalksAddition} />
             <Route exact path="/signin" component={SignInPage} />
             <Route exact path="/signup" component={SignUpPage} />
+            <Route path="/" component={WalksPage} />
           </Switch>
         </Router>
       </UserProvider>

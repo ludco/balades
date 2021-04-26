@@ -12,7 +12,7 @@ const UserProvider = ({ children }) => {
   useEffect(() => {
     if (!user) {
       auth.onAuthStateChanged((userAuth) => {
-        dispatch(getCurrentUser(userAuth.uid));
+        dispatch(getCurrentUser(userAuth?.uid));
       });
     }
   }, []);

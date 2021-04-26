@@ -40,6 +40,11 @@ export const Header = ({ history }) => {
                 </DropdownToggle>
                 <DropdownMenu right>
                   <DropdownItem>
+                    <Link to="/my-walks" className="link">
+                      Mes balades
+                    </Link>
+                  </DropdownItem>
+                  <DropdownItem>
                     <Link to="/add" className="link">
                       Ajouter une balade
                     </Link>
