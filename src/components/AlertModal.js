@@ -14,7 +14,7 @@ const AlertModal = ({ isOpen, content, doPrimary, doSecondary }) => {
         <ModalFooter>
           <Button color="primary" onClick={doPrimary}>
             {content.primary}
-          </Button>{' '}
+          </Button>
           <Button color="secondary" onClick={doSecondary}>
             {content.secondary}
           </Button>

@@ -9,13 +9,12 @@ import {
   Button,
   Spinner,
   Toast,
-  ToastBody,
 } from 'reactstrap';
 import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch, useSelector } from 'react-redux';
-import { addWalk, editWalk, getSettings, removeWalk } from '../actions';
+import { addWalk, editWalk, getSettings } from '../actions';
 import { storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';

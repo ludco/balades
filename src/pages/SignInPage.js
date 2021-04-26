@@ -18,12 +18,12 @@ export const SignInPage = ({ history }) => {
   const signInWithEmailAndPasswordHandler = async (event) => {
     auth
       .signInWithEmailAndPassword(event.email, event.password)
+      .then(() => history.push('/'))
       .catch((err) => {
         setError('Les identifiants ne correspondent pas.');
         console.error('Error signing in with password and email', err);
       });
     setUser(userInitialState);
-    history.push('/');
   };
 
   /**
