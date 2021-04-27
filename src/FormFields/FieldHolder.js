@@ -13,7 +13,7 @@ const FieldHolder = (props) => {
     showWarningBeforeTouched,
     children,
   } = props;
-  console.log('props.meta.error', props.meta.error);
+
   let validationstate;
   if (
     (data && data.error ? data.error : error) &&
