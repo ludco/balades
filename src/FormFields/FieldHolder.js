@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, FormLabel } from 'react-bootstrap';
 import Help from './Help';
+import './selectField.scss';
 
 const FieldHolder = (props) => {
   const {
@@ -12,7 +13,7 @@ const FieldHolder = (props) => {
     showWarningBeforeTouched,
     children,
   } = props;
-
+  console.log('props.meta.error', props.meta.error);
   let validationstate;
   if (
     (data && data.error ? data.error : error) &&
@@ -31,9 +32,9 @@ const FieldHolder = (props) => {
       {tooltip && <Help input={name} text={tooltip} />}
       {children}
       {validationstate && (
-        <FormLabel
-          className={`section-textarea__message ${validationstate}`}
-        ></FormLabel>
+        <FormLabel className={`form-message ${validationstate}`}>
+          {props.meta.error}
+        </FormLabel>
       )}
     </FormGroup>
   );

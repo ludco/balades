@@ -36,7 +36,7 @@ export const WalksPage = ({ history }) => {
         ? walksToDisplay.length
         : walks.length
       : walks.length;
-    const plural = number.length < 2 ? '' : 's';
+    const plural = number < 2 ? '' : 's';
     return `${number} résultat${plural}`;
   };
 

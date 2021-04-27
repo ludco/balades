@@ -98,6 +98,10 @@ export const deleteWalk = async (walkToDelete) => {
 
 /* ----------------- USER --------------------- */
 
+export const getUserRef = async (user) => {
+  return db.doc(`users/${user.uid}`);
+};
+
 /**
  * Generate firebase User Document (signUp)
  * @param {Object} newUser

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import 'firebase/storage';
 import {
   Row,
@@ -20,10 +20,12 @@ import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
 import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
-import { deletePic } from '../firebaseRequests';
+import { deletePic, getUserRef } from '../firebaseRequests';
+import { UserContext } from '../providers/UserProvider';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
+  const userCtxt = useContext(UserContext);
   // Toast
   const toast = useSelector((state) => state.toast);
   const [toastVisible, setToastVisible] = useState(toast);
@@ -59,24 +61,29 @@ export const WalkForm = ({ history }) => {
     primary: 'supprimer',
     secondary: 'annuler',
   };
+  //Form
+  const required = (value) => (value ? null : 'Ce champs est requis');
   //Pic
   const [imageAsFile, setImageAsFile] = useState('');
   const handleImageAsFile = (e) => {
     setImageAsFile(e.target.files[0]);
   };
   const loading = useSelector((state) => state.loading);
+
   /**
    * Handle pic upload to firebase, get pic url and add walk document to firebase db
    * @param {Object} walkToAdd
    */
-  const doCreateWalk = (walk) => {
+  const doCreateWalk = async (walk) => {
+    const currentUserRef = await getUserRef(userCtxt.user);
+
     dispatch({ type: SET_LOADING_TRUE });
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       dispatch(
         walkToUpdate
           ? editWalk(walk, null, history)
-          : addWalk(walk, null, history)
+          : addWalk({ ...walk, user: currentUserRef }, null, history)
       );
     } else {
       const uploadTask = storage
@@ -112,7 +119,7 @@ export const WalkForm = ({ history }) => {
                         history
                       )
                     : addWalk(
-                        walk,
+                        { ...walk, user: currentUserRef },
                         { name: imageAsFile.name, url: fireBaseUrl },
                         history
                       )
@@ -180,12 +187,14 @@ export const WalkForm = ({ history }) => {
                 name="name"
                 component={TextField}
                 placeholder="Nom de la balade"
+                validate={required}
               />
               <Field
                 name="difficulty"
                 component={SelectField}
                 placeholder="Difficulté"
                 options={options}
+                validate={required}
               />
               <Field
                 name="description"
@@ -193,17 +202,20 @@ export const WalkForm = ({ history }) => {
                 placeholder="Description"
                 as="textarea"
                 rows={3}
+                validate={required}
               />
               <Field
                 name="sector"
                 component={TextField}
                 placeholder="Secteur"
+                validate={required}
               />
               <Field
                 name="time"
                 type="number"
                 component={TextField}
                 placeholder="Durée en heures"
+                validate={required}
               />
               <Field
                 name="buggy"

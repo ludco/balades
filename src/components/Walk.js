@@ -66,7 +66,7 @@ export const Walk = ({ walk, history }) => {
           </Col>
           <Col md="9" sm="12">
             <Row>
-              <Col>
+              <Col md="9">
                 <CardTitle tag="h5">{walk.name}</CardTitle>
               </Col>
               {walk.user.id === userCtxt.user?.uid && (
