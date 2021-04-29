@@ -93,3 +93,14 @@ a {
 .warning {
   background-color: $warning;
 }
+
+.map,
+.mapform {
+  height: 60vh;
+}
+@media screen and (max-width: 992px) {
+  .map {
+    height: 40vh;
+    margin-bottom: 1vh;
+  }
+}

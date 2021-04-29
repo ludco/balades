@@ -8,14 +8,17 @@ import { render } from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './store';
 import { createBrowserHistory } from 'history';
+import { PersistGate } from 'redux-persist/integration/react';
 
 export const browserHistory = createBrowserHistory();
 
-const store = configureStore();
+const { store, persistor } = configureStore();
 
 render(
   <Provider store={store}>
-    <App />
+    <PersistGate loading={null} persistor={persistor}>
+      <App />
+    </PersistGate>
   </Provider>,
   document.getElementById('root')
 );

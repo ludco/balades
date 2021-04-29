@@ -1,10 +1,11 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { WalksList } from '../components/WalksList';
-import { Container, Spinner, ToastBody, Alert } from 'reactstrap';
+import { Container, Spinner, ToastBody, Alert, Row, Col } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'reactstrap';
 import { SET_TOAST_TO_FALSE } from '../constants/action-types';
+import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 
 export const WalksPage = ({ history }) => {
   const { walks, loading, user } = useSelector((state) => state);
@@ -55,11 +56,32 @@ export const WalksPage = ({ history }) => {
       <Alert color="info" className="mt-2">
         {showResultsNumber()}
       </Alert>
-
-      <WalksList
-        walks={user ? (walksToDisplay ? walksToDisplay : walks) : walks}
-        history={history}
-      />
+      <Row>
+        <Col lg="5">
+          <MapContainer
+            className="map"
+            center={[45.75, 4.85]}
+            zoom={9}
+            scrollWheelZoom={false}
+          >
+            <TileLayer
+              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={[45.75, 4.85]}>
+              <Popup>
+                A pretty CSS3 popup. <br /> Easily customizable.
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </Col>
+        <Col lg="7">
+          <WalksList
+            walks={user ? (walksToDisplay ? walksToDisplay : walks) : walks}
+            history={history}
+          />
+        </Col>
+      </Row>
     </Container>
   );
 };

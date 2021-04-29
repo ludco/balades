@@ -19,6 +19,7 @@ function App() {
     if (!walks.length) dispatch(getWalks());
     if (!settings.length) dispatch(getSettings());
   }, []);
+
   return (
     <IconContext.Provider value={{ className: 'react-icons' }}>
       <UserProvider>

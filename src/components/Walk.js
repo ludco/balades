@@ -47,7 +47,7 @@ export const Walk = ({ walk, history }) => {
     <Card>
       <CardBody>
         <Row>
-          <Col md="3" sm="8">
+          <Col lg="5" md="4" sm="4" xs="12">
             {walk.pics[0]?.url ? (
               <img
                 className="pic"
@@ -64,13 +64,13 @@ export const Walk = ({ walk, history }) => {
               />
             )}
           </Col>
-          <Col md="9" sm="12">
+          <Col lg="7" md="8" sm="8" xs="12">
             <Row>
               <Col md="9">
                 <CardTitle tag="h5">{walk.name}</CardTitle>
               </Col>
               {walk.user.id === userCtxt.user?.uid && (
-                <Col className="text-right">
+                <Col className="text-right" md="3">
                   <Button
                     color="link"
                     onClick={() => history.push('/add', walk)}

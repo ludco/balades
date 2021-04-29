@@ -23,6 +23,8 @@ import SelectField from '../FormFields/SelectField';
 import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
 import { deletePic, getUserRef } from '../firebaseRequests';
 import { UserContext } from '../providers/UserProvider';
+import MapModal from './MapModal';
+import { MdPlace } from 'react-icons/md';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
@@ -32,7 +34,9 @@ export const WalkForm = ({ history }) => {
   const [toastVisible, setToastVisible] = useState(toast);
 
   useEffect(() => {
-    if (!difficulties) dispatch(getSettings());
+    if (!difficulties) {
+      dispatch(getSettings());
+    }
     if (toastVisible.status) {
       setTimeout(() => {
         setToastVisible({ ...toastVisible, status: false });
@@ -51,6 +55,8 @@ export const WalkForm = ({ history }) => {
   const [newWalk, setNewWalk] = useState({
     name: '',
     difficulty: '',
+    sector: '',
+    latlng: {},
     description: '',
     pics: [],
   });
@@ -62,6 +68,8 @@ export const WalkForm = ({ history }) => {
     primary: 'supprimer',
     secondary: 'annuler',
   };
+  // MapModal
+  const [isMapOpen, setIsMapOpen] = useState(false);
   //Form
   const required = (value) => (value ? null : 'Ce champs est requis');
   //Pic
@@ -161,6 +169,14 @@ export const WalkForm = ({ history }) => {
     }
   };
 
+  const getPosition = (position) => {
+    console.log(position);
+    walkToUpdate
+      ? setWalkToUpdate({ ...walkToUpdate, latlng: position })
+      : setNewWalk({ ...newWalk, latlng: position });
+    setIsMapOpen(false);
+  };
+
   return (
     <Card className="signin mt-5">
       <Toast
@@ -205,12 +221,28 @@ export const WalkForm = ({ history }) => {
                 rows={3}
                 validate={required}
               />
-              <Field
-                name="sector"
-                component={TextField}
-                placeholder="Secteur"
-                validate={required}
-              />
+              <Row>
+                <Col md="7">
+                  <Field
+                    name="sector"
+                    component={TextField}
+                    placeholder="Secteur"
+                    validate={required}
+                  />
+                </Col>
+                <Col md="3">
+                  {(walkToUpdate && walkToUpdate.latlng?.lat) ||
+                  (newWalk && newWalk.latlng?.lat) ? (
+                    <Button outline onClick={() => setIsMapOpen(true)}>
+                      <MdPlace /> OK !
+                    </Button>
+                  ) : (
+                    <Button onClick={() => setIsMapOpen(true)}>
+                      Localiser
+                    </Button>
+                  )}
+                </Col>
+              </Row>
               <Field
                 name="time"
                 type="number"
@@ -271,6 +303,14 @@ export const WalkForm = ({ history }) => {
             content={deletePicModal}
             doPrimary={() => removePic()}
             doSecondary={() => setIsOpen(false)}
+          />
+        )}
+        {isMapOpen && (
+          <MapModal
+            isOpen={isMapOpen}
+            content={{ primary: 'Valider', secondary: 'Annuler' }}
+            doPrimary={getPosition}
+            doSecondary={() => setIsMapOpen(false)}
           />
         )}
       </CardBody>
