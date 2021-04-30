@@ -16,12 +16,12 @@ import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch, useSelector } from 'react-redux';
 import { addWalk, editWalk, getSettings } from '../actions';
-import { storage } from '../firebase.config';
+import { db, dbadmin, geo, storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
 import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
-import { deletePic, getUserRef } from '../firebaseRequests';
+import { deletePic } from '../firebaseRequests';
 import { UserContext } from '../providers/UserProvider';
 import MapModal from './MapModal';
 import { MdPlace } from 'react-icons/md';
@@ -84,15 +84,13 @@ export const WalkForm = ({ history }) => {
    * @param {Object} walkToAdd
    */
   const doCreateWalk = async (walk) => {
-    const currentUserRef = await getUserRef(userCtxt.user);
-
     dispatch({ type: SET_LOADING_TRUE });
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       dispatch(
         walkToUpdate
           ? editWalk(walk, null, history)
-          : addWalk({ ...walk, user: currentUserRef }, null, history)
+          : addWalk({ ...walk, userId: userCtxt.user.uid }, null, history)
       );
     } else {
       const uploadTask = storage
@@ -128,7 +126,7 @@ export const WalkForm = ({ history }) => {
                         history
                       )
                     : addWalk(
-                        { ...walk, user: currentUserRef },
+                        { ...walk, userId: userCtxt.user.uid },
                         { name: imageAsFile.name, url: fireBaseUrl },
                         history
                       )
@@ -170,10 +168,10 @@ export const WalkForm = ({ history }) => {
   };
 
   const getPosition = (position) => {
-    console.log(position);
+    const latlng = new geo.GeoPoint(position.lat, position.lng);
     walkToUpdate
-      ? setWalkToUpdate({ ...walkToUpdate, latlng: position })
-      : setNewWalk({ ...newWalk, latlng: position });
+      ? setWalkToUpdate({ ...walkToUpdate, latlng })
+      : setNewWalk({ ...newWalk, latlng });
     setIsMapOpen(false);
   };
 
@@ -231,8 +229,8 @@ export const WalkForm = ({ history }) => {
                   />
                 </Col>
                 <Col md="3">
-                  {(walkToUpdate && walkToUpdate.latlng?.lat) ||
-                  (newWalk && newWalk.latlng?.lat) ? (
+                  {(walkToUpdate && walkToUpdate.latlng) ||
+                  (newWalk && newWalk.latlng) ? (
                     <Button outline onClick={() => setIsMapOpen(true)}>
                       <MdPlace /> OK !
                     </Button>
@@ -280,7 +278,11 @@ export const WalkForm = ({ history }) => {
               </Row>
               <Row>
                 <Col className="mt-2">
-                  <input type="file" onChange={handleImageAsFile} />
+                  <input
+                    type="file"
+                    accept="image/png, image/jpeg"
+                    onChange={handleImageAsFile}
+                  />
                 </Col>
               </Row>
               <Row>

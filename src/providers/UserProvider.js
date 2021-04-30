@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { createContext, useEffect } from 'react';
+import React, { createContext, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { getCurrentUser } from '../actions';
 import { auth } from '../firebase.config';
@@ -7,21 +7,25 @@ import { auth } from '../firebase.config';
 export const UserContext = createContext();
 
 const UserProvider = ({ children }) => {
-  const user = useSelector((state) => state.user);
+  const storeUser = useSelector((state) => state.user);
   const dispatch = useDispatch();
-
+  const [user, setUser] = useState(storeUser);
   useEffect(() => {
-    if (!user) {
+    if (!storeUser) {
       auth.onAuthStateChanged((userAuth) => {
         dispatch(getCurrentUser(userAuth?.uid));
       });
     }
   }, []);
+  useEffect(() => {
+    if (!user) setUser(storeUser);
+  }, [storeUser]);
 
   return (
     <UserContext.Provider
       value={{
         user,
+        setUser,
       }}
     >
       {children}

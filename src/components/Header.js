@@ -14,8 +14,11 @@ import {
 import { UserContext } from '../providers/UserProvider';
 import { auth } from '../firebase.config';
 import { Link } from 'react-router-dom';
+import { useDispatch } from 'react-redux';
+import { LOGOUT_USER } from '../constants/action-types';
 
 export const Header = ({ history }) => {
+  const dispatch = useDispatch();
   const userCtxt = useContext(UserContext);
   const [isOpen, setIsOpen] = useState(false);
 
@@ -54,7 +57,8 @@ export const Header = ({ history }) => {
                     href="/"
                     onClick={() => {
                       auth.signOut();
-                      userCtxt.setUser({});
+                      dispatch({ type: LOGOUT_USER, payload: null });
+                      userCtxt.setUser(null);
                     }}
                   >
                     déconnexion <i className="bi bi-power"></i>

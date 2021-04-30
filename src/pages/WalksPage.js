@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'reactstrap';
 import { SET_TOAST_TO_FALSE } from '../constants/action-types';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { LocationMarker } from '../components/LocationMarker';
 
 export const WalksPage = ({ history }) => {
   const { walks, loading, user } = useSelector((state) => state);
@@ -14,7 +15,7 @@ export const WalksPage = ({ history }) => {
   const [walksToDisplay, setWalksToDisplay] = useState();
   useEffect(() => {
     if (history.location?.pathname === '/my-walks') {
-      setWalksToDisplay(walks.filter((walk) => walk.user.id === user.uid));
+      setWalksToDisplay(walks.filter((walk) => walk.userId === user.uid));
     } else {
       setWalksToDisplay(walks);
     }
@@ -61,18 +62,16 @@ export const WalksPage = ({ history }) => {
           <MapContainer
             className="map"
             center={[45.75, 4.85]}
-            zoom={9}
-            scrollWheelZoom={false}
+            zoom={7}
+            scrollWheelZoom={true}
           >
             <TileLayer
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
             />
-            <Marker position={[45.75, 4.85]}>
-              <Popup>
-                A pretty CSS3 popup. <br /> Easily customizable.
-              </Popup>
-            </Marker>
+            {walks.map((walk) => (
+              <LocationMarker key={walk.id} walk={walk} />
+            ))}
           </MapContainer>
         </Col>
         <Col lg="7">

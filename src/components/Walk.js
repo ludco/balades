@@ -69,7 +69,7 @@ export const Walk = ({ walk, history }) => {
               <Col md="9">
                 <CardTitle tag="h5">{walk.name}</CardTitle>
               </Col>
-              {walk.user.id === userCtxt.user?.uid && (
+              {walk.userId === userCtxt.user?.uid && (
                 <Col className="text-right" md="3">
                   <Button
                     color="link"

@@ -9,6 +9,7 @@
     "bootstrap": "^4.6.0",
     "final-form": "^4.20.2",
     "firebase": "^8.3.2",
+    "firebase-admin": "^9.7.0",
     "firebase-tools": "^9.8.0",
     "history": "^5.0.0",
     "leaflet": "^1.7.1",

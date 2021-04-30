@@ -3,6 +3,7 @@ import {
   ADD_WALK,
   UPDATE_WALK,
   LOAD_USER,
+  LOGOUT_USER,
   LOAD_SETTINGS,
   SET_LOADING_TRUE,
   SET_WARNING_TOAST,
@@ -25,6 +26,10 @@ function rootReducer(state = initialState, action) {
       user: action.payload,
       loading: false,
     };
+  }
+  if (action.type === LOGOUT_USER) {
+    localStorage.removeItem('persist:root');
+    return initialState;
   }
   if (action.type === LOAD_WALKS) {
     return {
