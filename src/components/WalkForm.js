@@ -16,7 +16,7 @@ import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch, useSelector } from 'react-redux';
 import { addWalk, editWalk, getSettings } from '../actions';
-import { db, dbadmin, geo, storage } from '../firebase.config';
+import { geo, storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
@@ -167,6 +167,10 @@ export const WalkForm = ({ history }) => {
     }
   };
 
+  /**
+   * Get positions from DraggableMarker and create geoPoint for firebase
+   * @param {Object} position
+   */
   const getPosition = (position) => {
     const latlng = new geo.GeoPoint(position.lat, position.lng);
     walkToUpdate

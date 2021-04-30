@@ -32,6 +32,9 @@ export const Walk = ({ walk, history }) => {
     secondary: 'annuler',
   };
 
+  /**
+   * Delete walk (and pic from storage)
+   */
   const deleteWalk = () => {
     try {
       if (walk.pics[0]?.name) deletePic(walk);

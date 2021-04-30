@@ -1,19 +1,8 @@
-import React, { useState } from 'react';
-import { Marker, Popup, useMapEvents } from 'react-leaflet';
+import React from 'react';
+import { Marker, Popup } from 'react-leaflet';
+import { Link } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 export const LocationMarker = ({ walk }) => {
-  /*  const [position, setPosition] = useState(null);
-
-  const map = useMapEvents({
-    click() {
-      map.locate();
-    },
-    locationfound(e) {
-      setPosition(e.latlng);
-      map.flyTo(e.latlng, map.getZoom());
-    },
-  });
- */
   const position = [walk.latlng.latitude, walk.latlng.longitude];
   if (position === null) {
     return null;
@@ -24,6 +13,8 @@ export const LocationMarker = ({ walk }) => {
         <Row>
           <Col md="8" className="p-0">
             {walk.name}
+            <br />
+            <Link to={`/walk/${walk.id}`}>détails</Link>
           </Col>
           <Col md="4" className="p-2">
             {walk.pics[0]?.url && (

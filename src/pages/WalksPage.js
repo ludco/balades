@@ -5,7 +5,7 @@ import { Container, Spinner, ToastBody, Alert, Row, Col } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'reactstrap';
 import { SET_TOAST_TO_FALSE } from '../constants/action-types';
-import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
+import { MapContainer, TileLayer } from 'react-leaflet';
 import { LocationMarker } from '../components/LocationMarker';
 
 export const WalksPage = ({ history }) => {

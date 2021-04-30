@@ -102,7 +102,9 @@ a {
   background-color: $warning;
 }
 
-.map,
+.map {
+  height: 80vh;
+}
 .mapform {
   height: 60vh;
 }
