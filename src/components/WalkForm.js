@@ -59,6 +59,7 @@ export const WalkForm = ({ history }) => {
     latlng: {},
     description: '',
     pics: [],
+    latlng: null,
   });
   // Modal
   const [isOpen, setIsOpen] = useState(false);
@@ -77,6 +78,10 @@ export const WalkForm = ({ history }) => {
   const handleImageAsFile = (e) => {
     setImageAsFile(e.target.files[0]);
   };
+  //Position
+  const [latlng, setLatlng] = useState(
+    walkToUpdate ? walkToUpdate.latlng : newWalk.latlng
+  );
   const loading = useSelector((state) => state.loading);
 
   /**
@@ -89,8 +94,12 @@ export const WalkForm = ({ history }) => {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       dispatch(
         walkToUpdate
-          ? editWalk(walk, null, history)
-          : addWalk({ ...walk, userId: userCtxt.user.uid }, null, history)
+          ? editWalk({ ...walk, latlng }, null, history)
+          : addWalk(
+              { ...walk, latlng, userId: userCtxt.user.uid },
+              null,
+              history
+            )
       );
     } else {
       const uploadTask = storage
@@ -121,12 +130,12 @@ export const WalkForm = ({ history }) => {
                 dispatch(
                   walkToUpdate
                     ? editWalk(
-                        walk,
+                        { ...walk, latlng },
                         { name: imageAsFile.name, url: fireBaseUrl },
                         history
                       )
                     : addWalk(
-                        { ...walk, userId: userCtxt.user.uid },
+                        { ...walk, latlng, userId: userCtxt.user.uid },
                         { name: imageAsFile.name, url: fireBaseUrl },
                         history
                       )
@@ -144,8 +153,10 @@ export const WalkForm = ({ history }) => {
   const removePic = async () => {
     try {
       deletePic(walkToUpdate);
-      setWalkToUpdate({ ...walkToUpdate, pics: [] });
-      dispatch(editWalk(walkToUpdate, { url: '', name: '' }, null));
+      setWalkToUpdate({ ...walkToUpdate, latlng, pics: [] });
+      dispatch(
+        editWalk({ ...walkToUpdate, latlng }, { url: '', name: '' }, null)
+      );
       setImageAsFile('');
       setIsOpen(false);
     } catch (e) {
@@ -160,7 +171,7 @@ export const WalkForm = ({ history }) => {
    */
   const doUpdateWalk = (walk) => {
     try {
-      dispatch(editWalk(walk, null, history));
+      dispatch(editWalk({ ...walk, latlng }, null, history));
     } catch (e) {
       console.error('Error updating walk', e);
       dispatch({ type: SET_WARNING_TOAST });
@@ -172,10 +183,7 @@ export const WalkForm = ({ history }) => {
    * @param {Object} position
    */
   const getPosition = (position) => {
-    const latlng = new geo.GeoPoint(position.lat, position.lng);
-    walkToUpdate
-      ? setWalkToUpdate({ ...walkToUpdate, latlng })
-      : setNewWalk({ ...newWalk, latlng });
+    setLatlng(new geo.GeoPoint(position.lat, position.lng));
     setIsMapOpen(false);
   };
 
@@ -233,8 +241,7 @@ export const WalkForm = ({ history }) => {
                   />
                 </Col>
                 <Col md="3">
-                  {(walkToUpdate && walkToUpdate.latlng) ||
-                  (newWalk && newWalk.latlng) ? (
+                  {latlng ? (
                     <Button outline onClick={() => setIsMapOpen(true)}>
                       <MdPlace /> OK !
                     </Button>
