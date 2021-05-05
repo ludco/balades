@@ -55,10 +55,10 @@ function rootReducer(state = initialState, action) {
     const index = state.walks.findIndex(
       (walk) => walk.id === action.payload.id
     );
-    state.walks[index] = action.payload;
+    state.walks.splice(index, 1);
     return {
       ...state,
-      walks: state.walks,
+      walks: state.walks.concat(action.payload),
       loading: false,
       toast: {
         status: true,

@@ -30,7 +30,7 @@ export default function configureStore() {
     }); */
   const store = createStore(
     persistedReducer,
-    composeEnhancers(applyMiddleware(clearStorage, initialiseSagaMiddleware))
+    composeEnhancers(applyMiddleware(initialiseSagaMiddleware))
     //composeEnhancers(applyMiddleware(thunk, clearStorage))
   );
   const persistor = persistStore(store);

@@ -31,7 +31,7 @@ import {
   showWarningToast,
 } from '../actions';
 
-export const WalkForm = ({ history }) => {
+export const WalkForm = ({ history, settings }) => {
   const dispatch = useDispatch();
   const userCtxt = useContext(UserContext);
   // Toast
@@ -39,9 +39,6 @@ export const WalkForm = ({ history }) => {
   const [toastVisible, setToastVisible] = useState(toast);
 
   useEffect(() => {
-    if (!difficulties) {
-      dispatch(doGetSettings());
-    }
     if (toastVisible.status) {
       setTimeout(() => {
         setToastVisible({ ...toastVisible, status: false });
@@ -49,9 +46,8 @@ export const WalkForm = ({ history }) => {
     }
   }, []);
   //Settings
-  const difficulties = useSelector((state) => state.settings).find(
-    (setting) => setting.difficulty
-  );
+  console.log(settings);
+  const difficulties = settings.find((setting) => setting.difficulty);
   const options = difficulties.difficulty.map((diff) => {
     return { key: diff, text: diff };
   });
