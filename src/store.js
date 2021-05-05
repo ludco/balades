@@ -1,7 +1,7 @@
-import { createStore, applyMiddleware, compose } from 'redux';
+import { createStore, applyMiddleware } from 'redux';
 import { composeWithDevTools } from 'redux-devtools-extension';
 import rootReducer from './reducer';
-import thunk from 'redux-thunk';
+//import thunk from 'redux-thunk';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
@@ -30,7 +30,7 @@ export default function configureStore() {
     }); */
   const store = createStore(
     persistedReducer,
-    composeEnhancers(applyMiddleware(initialiseSagaMiddleware, clearStorage))
+    composeEnhancers(applyMiddleware(clearStorage, initialiseSagaMiddleware))
     //composeEnhancers(applyMiddleware(thunk, clearStorage))
   );
   const persistor = persistStore(store);

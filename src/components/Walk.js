@@ -37,7 +37,7 @@ export const Walk = ({ walk, history }) => {
   const deleteWalk = () => {
     try {
       if (walk.pics[0]?.name) deletePic(walk);
-      dispatch(doRemoveWalk());
+      dispatch(doRemoveWalk({ walkToDelete: walk }));
       setIsOpen(false);
     } catch (e) {
       console.error('Error removing walk', e);

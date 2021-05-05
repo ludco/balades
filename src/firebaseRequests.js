@@ -62,7 +62,7 @@ export const getWalkDocument = async (id) => {
  * @param {Object} walkToUpdate
  * @returns
  */
-export const updateWalk = async (walkToUpdate, imageData) => {
+export const updateWalk = async ({ walkToUpdate, imageData }) => {
   try {
     var walkRef = db.collection('balades').doc(`${walkToUpdate.id}`);
     if (imageData) {
@@ -87,7 +87,7 @@ export const updateWalk = async (walkToUpdate, imageData) => {
  * @param {Object} walkToDelete
  * @returns
  */
-export const deleteWalk = async (walkToDelete) => {
+export const deleteWalk = async ({ walkToDelete }) => {
   try {
     var walkRef = db.collection('balades').doc(`${walkToDelete.id}`);
     walkRef.delete();

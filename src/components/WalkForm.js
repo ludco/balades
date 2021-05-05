@@ -19,12 +19,17 @@ import { geo, storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
-import { GET_SETTINGS, SET_LOADING_TRUE } from '../constants/action-types';
 import { deletePic } from '../firebaseRequests';
 import { UserContext } from '../providers/UserProvider';
 import MapModal from './MapModal';
 import { MdPlace } from 'react-icons/md';
-import { doCreateWalk, doEditWalk, showWarningToast } from '../actions';
+import {
+  doCreateWalk,
+  doEditWalk,
+  doGetSettings,
+  setLoadingTrue,
+  showWarningToast,
+} from '../actions';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
@@ -35,7 +40,7 @@ export const WalkForm = ({ history }) => {
 
   useEffect(() => {
     if (!difficulties) {
-      dispatch({ type: GET_SETTINGS }());
+      dispatch(doGetSettings());
     }
     if (toastVisible.status) {
       setTimeout(() => {
@@ -56,10 +61,9 @@ export const WalkForm = ({ history }) => {
     name: '',
     difficulty: '',
     sector: '',
-    latlng: {},
+    latlng: null,
     description: '',
     pics: [],
-    latlng: null,
   });
   // Modal
   const [isOpen, setIsOpen] = useState(false);
@@ -89,13 +93,13 @@ export const WalkForm = ({ history }) => {
    * @param {Object} walkToAdd
    */
   const HandleCreateWalk = async (walk) => {
-    dispatch({ type: SET_LOADING_TRUE });
+    dispatch(setLoadingTrue());
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       dispatch(
         walkToUpdate
           ? doEditWalk({
-              walkToAdd: { ...walk, latlng },
+              walkToUpdate: { ...walk, latlng },
               imageData: null,
               history: history,
             })

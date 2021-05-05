@@ -8,6 +8,8 @@ import {
   GET_WALKS,
   LOGOUT_USER,
   REMOVE_WALK,
+  SET_LOADING_TRUE,
+  SET_TOAST_TO_FALSE,
   SET_WARNING_TOAST,
 } from './constants/action-types';
 
@@ -20,3 +22,5 @@ export const doEditWalk = createAction(EDIT_WALK);
 export const doRemoveWalk = createAction(REMOVE_WALK);
 export const doGetSettings = createAction(GET_SETTINGS);
 export const showWarningToast = createAction(SET_WARNING_TOAST);
+export const setToastFalse = createAction(SET_TOAST_TO_FALSE);
+export const setLoadingTrue = createAction(SET_LOADING_TRUE);

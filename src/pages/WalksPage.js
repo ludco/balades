@@ -4,9 +4,9 @@ import { WalksList } from '../components/WalksList';
 import { Container, Spinner, ToastBody, Alert, Row, Col } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'reactstrap';
-import { SET_TOAST_TO_FALSE } from '../constants/action-types';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { LocationMarker } from '../components/LocationMarker';
+import { setToastFalse } from '../actions';
 
 export const WalksPage = ({ history }) => {
   const { walks, loading, user } = useSelector((state) => state);
@@ -27,7 +27,7 @@ export const WalksPage = ({ history }) => {
     if (toast.status) {
       setTimeout(() => {
         //setToastVisible({ type: '', message: '', status: false });
-        dispatch({ type: SET_TOAST_TO_FALSE });
+        dispatch(setToastFalse());
       }, 2000);
     }
   }, [walks.length]);

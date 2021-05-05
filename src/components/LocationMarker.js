@@ -3,8 +3,8 @@ import { Marker, Popup } from 'react-leaflet';
 import { Link } from 'react-router-dom';
 import { Col, Row } from 'reactstrap';
 export const LocationMarker = ({ walk }) => {
-  const position = [walk.latlng.latitude, walk.latlng.longitude];
-  if (position === null) {
+  const position = [walk.latlng?.latitude, walk.latlng?.longitude];
+  if (!position[0] || !position[1]) {
     return null;
   }
   return (
