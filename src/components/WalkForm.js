@@ -26,7 +26,6 @@ import { MdPlace } from 'react-icons/md';
 import {
   doCreateWalk,
   doEditWalk,
-  doGetSettings,
   setLoadingTrue,
   showWarningToast,
 } from '../actions';

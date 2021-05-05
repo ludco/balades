@@ -5,7 +5,6 @@ import rootReducer from './reducer';
 import { persistStore, persistReducer } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 import autoMergeLevel2 from 'redux-persist/lib/stateReconciler/autoMergeLevel2';
-import { clearStorage } from './middlewares';
 import createSagaMiddleware from 'redux-saga';
 import rootSaga from './sagas';
 
