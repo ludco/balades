@@ -15,16 +15,16 @@ import { Field, Form } from 'react-final-form';
 import TextField from '../FormFields/TextField';
 import CheckboxField from '../FormFields/CheckboxField';
 import { useDispatch, useSelector } from 'react-redux';
-import { addWalk, editWalk, getSettings } from '../actions';
 import { geo, storage } from '../firebase.config';
 import { TiDelete } from 'react-icons/ti';
 import AlertModal from './AlertModal';
 import SelectField from '../FormFields/SelectField';
-import { SET_LOADING_TRUE, SET_WARNING_TOAST } from '../constants/action-types';
+import { GET_SETTINGS, SET_LOADING_TRUE } from '../constants/action-types';
 import { deletePic } from '../firebaseRequests';
 import { UserContext } from '../providers/UserProvider';
 import MapModal from './MapModal';
 import { MdPlace } from 'react-icons/md';
+import { doCreateWalk, doEditWalk, showWarningToast } from '../actions';
 
 export const WalkForm = ({ history }) => {
   const dispatch = useDispatch();
@@ -35,7 +35,7 @@ export const WalkForm = ({ history }) => {
 
   useEffect(() => {
     if (!difficulties) {
-      dispatch(getSettings());
+      dispatch({ type: GET_SETTINGS }());
     }
     if (toastVisible.status) {
       setTimeout(() => {
@@ -88,18 +88,22 @@ export const WalkForm = ({ history }) => {
    * Handle pic upload to firebase, get pic url and add walk document to firebase db
    * @param {Object} walkToAdd
    */
-  const doCreateWalk = async (walk) => {
+  const HandleCreateWalk = async (walk) => {
     dispatch({ type: SET_LOADING_TRUE });
     if (imageAsFile === '') {
       console.error(`Not an image, the image file is a ${typeof imageAsFile}`);
       dispatch(
         walkToUpdate
-          ? editWalk({ ...walk, latlng }, null, history)
-          : addWalk(
-              { ...walk, latlng, userId: userCtxt.user.uid },
-              null,
-              history
-            )
+          ? doEditWalk({
+              walkToAdd: { ...walk, latlng },
+              imageData: null,
+              history: history,
+            })
+          : doCreateWalk({
+              walkToAdd: { ...walk, latlng, userId: userCtxt.user.uid },
+              imageData: null,
+              history: history,
+            })
       );
     } else {
       const uploadTask = storage
@@ -116,7 +120,7 @@ export const WalkForm = ({ history }) => {
         (err) => {
           //catches the errors
           console.log('upload error', err);
-          dispatch({ type: SET_WARNING_TOAST });
+          dispatch(showWarningToast());
         },
         () => {
           // gets the functions from storage refences the image storage in firebase by the children
@@ -129,20 +133,24 @@ export const WalkForm = ({ history }) => {
               try {
                 dispatch(
                   walkToUpdate
-                    ? editWalk(
-                        { ...walk, latlng },
-                        { name: imageAsFile.name, url: fireBaseUrl },
-                        history
-                      )
-                    : addWalk(
-                        { ...walk, latlng, userId: userCtxt.user.uid },
-                        { name: imageAsFile.name, url: fireBaseUrl },
-                        history
-                      )
+                    ? doEditWalk({
+                        walkToUpdate: { ...walk, latlng },
+                        imageData: { name: imageAsFile.name, url: fireBaseUrl },
+                        history: history,
+                      })
+                    : doCreateWalk({
+                        walkToAdd: {
+                          ...walk,
+                          latlng,
+                          userId: userCtxt.user.uid,
+                        },
+                        imageData: { name: imageAsFile.name, url: fireBaseUrl },
+                        history: history,
+                      })
                 );
               } catch (e) {
                 console.error('Error saving walk', e);
-                dispatch({ type: SET_WARNING_TOAST });
+                dispatch(showWarningToast());
               }
             });
         }
@@ -155,13 +163,16 @@ export const WalkForm = ({ history }) => {
       deletePic(walkToUpdate);
       setWalkToUpdate({ ...walkToUpdate, latlng, pics: [] });
       dispatch(
-        editWalk({ ...walkToUpdate, latlng }, { url: '', name: '' }, null)
+        doEditWalk({
+          walkToUpdate: { ...walkToUpdate, latlng },
+          imageData: { url: '', name: '' },
+        })
       );
       setImageAsFile('');
       setIsOpen(false);
     } catch (e) {
       console.error('Error updating walk, e');
-      dispatch({ type: SET_WARNING_TOAST });
+      dispatch(showWarningToast());
     }
   };
 
@@ -169,12 +180,18 @@ export const WalkForm = ({ history }) => {
    * Update walk document without pic change
    * @param {Object} walk
    */
-  const doUpdateWalk = (walk) => {
+  const HandleUpdateWalk = (walk) => {
     try {
-      dispatch(editWalk({ ...walk, latlng }, null, history));
+      dispatch(
+        doEditWalk({
+          walkToUpdate: { ...walk, latlng },
+          imageData: null,
+          history: history,
+        })
+      );
     } catch (e) {
       console.error('Error updating walk', e);
-      dispatch({ type: SET_WARNING_TOAST });
+      dispatch(showWarningToast());
     }
   };
 
@@ -202,9 +219,9 @@ export const WalkForm = ({ history }) => {
           onSubmit={(event) =>
             walkToUpdate
               ? imageAsFile
-                ? doCreateWalk({ ...walkToUpdate, ...event })
-                : doUpdateWalk({ ...walkToUpdate, ...event })
-              : doCreateWalk({ ...event })
+                ? HandleCreateWalk({ ...walkToUpdate, ...event })
+                : HandleUpdateWalk({ ...walkToUpdate, ...event })
+              : HandleCreateWalk({ ...event })
           }
           onChange={(event) => setNewWalk(event)}
         >

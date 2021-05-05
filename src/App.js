@@ -9,15 +9,15 @@ import { SignUpPage } from './pages/SignUpPage';
 import { WalksAddition } from './pages/WalkAddition';
 import { IconContext } from 'react-icons/lib';
 import { useDispatch, useSelector } from 'react-redux';
-import { getSettings, getWalks } from './actions';
+import { doGetSettings, doGetWalks } from './actions';
 
 function App() {
   const dispatch = useDispatch();
   const { walks, settings } = useSelector((state) => state);
 
   useEffect(() => {
-    if (!walks.length) dispatch(getWalks());
-    if (!settings.length) dispatch(getSettings());
+    if (!walks.length) dispatch(doGetWalks());
+    if (!settings.length) dispatch(doGetSettings());
   }, []);
 
   return (

@@ -25,6 +25,7 @@
     "react-scripts": "4.0.3",
     "reactstrap": "^8.9.0",
     "redux": "^4.0.5",
+    "redux-actions": "^2.6.5",
     "redux-devtools": "^3.7.0",
     "redux-devtools-extension": "^2.13.9",
     "redux-persist": "^6.0.0",

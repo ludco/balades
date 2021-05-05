@@ -15,10 +15,9 @@ import { BiEdit, BiTrash } from 'react-icons/bi';
 import defaut from '../assets/defaut.jpg';
 import AlertModal from './AlertModal';
 import { deletePic } from '../firebaseRequests';
-import { removeWalk } from '../actions';
 import { useDispatch } from 'react-redux';
-import { SET_WARNING_TOAST } from '../constants/action-types';
 import { UserContext } from '../providers/UserProvider';
+import { doRemoveWalk, showWarningToast } from '../actions';
 
 export const Walk = ({ walk, history }) => {
   const dispatch = useDispatch();
@@ -38,11 +37,11 @@ export const Walk = ({ walk, history }) => {
   const deleteWalk = () => {
     try {
       if (walk.pics[0]?.name) deletePic(walk);
-      dispatch(removeWalk(walk, history));
+      dispatch(doRemoveWalk());
       setIsOpen(false);
     } catch (e) {
       console.error('Error removing walk', e);
-      dispatch({ type: SET_WARNING_TOAST });
+      dispatch(showWarningToast());
     }
   };
 

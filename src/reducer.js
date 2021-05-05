@@ -9,6 +9,7 @@ import {
   SET_WARNING_TOAST,
   DELETE_WALK,
   SET_TOAST_TO_FALSE,
+  API_ERRORED,
 } from './constants/action-types';
 
 const initialState = {
@@ -112,6 +113,17 @@ function rootReducer(state = initialState, action) {
         status: false,
         type: '',
         message: '',
+      },
+    };
+  }
+  if (action.type === API_ERRORED) {
+    return {
+      ...state,
+      toast: {
+        status: true,
+        type: 'warning',
+        message:
+          'Oups, un problème est survenu. Nous mettons tout en oeuvre pour le régler !',
       },
     };
   }

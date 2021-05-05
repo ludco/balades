@@ -16,7 +16,7 @@ export const fetchWalks = async () => {
     });
     return walksArray;
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
 };
 /**
@@ -25,7 +25,7 @@ export const fetchWalks = async () => {
  * @param {String} imageData
  * @returns
  */
-export const createWalk = async (walkToAdd, imageData) => {
+export const createWalk = async ({ walkToAdd, imageData }) => {
   try {
     const walkRef = await db
       .collection('balades')

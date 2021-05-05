@@ -15,7 +15,7 @@ import { UserContext } from '../providers/UserProvider';
 import { auth } from '../firebase.config';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { LOGOUT_USER } from '../constants/action-types';
+import { doLogoutUser } from '../actions';
 
 export const Header = ({ history }) => {
   const dispatch = useDispatch();
@@ -57,7 +57,7 @@ export const Header = ({ history }) => {
                     href="/"
                     onClick={() => {
                       auth.signOut();
-                      dispatch({ type: LOGOUT_USER, payload: null });
+                      dispatch(doLogoutUser());
                       userCtxt.setUser(null);
                     }}
                   >

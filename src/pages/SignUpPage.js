@@ -3,8 +3,8 @@ import { Field, Form } from 'react-final-form';
 import { Button, Card, CardBody, CardHeader, Col } from 'reactstrap';
 import TextField from '../FormFields/TextField';
 import { auth } from '../firebase.config';
-import { addUser } from '../actions';
 import { useDispatch } from 'react-redux';
+import { doCreateUser } from '../actions';
 
 export const SignUpPage = ({ history }) => {
   const dispatch = useDispatch();
@@ -22,7 +22,7 @@ export const SignUpPage = ({ history }) => {
         event.password
       );
       const additionalDatas = { displayName: event.displayName };
-      dispatch(addUser(user, additionalDatas));
+      dispatch(doCreateUser({ user, additionalDatas }));
       history.push('/');
     } catch (err) {
       setError(
