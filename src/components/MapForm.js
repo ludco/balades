@@ -3,8 +3,11 @@ import { MapContainer, TileLayer } from 'react-leaflet';
 import { Alert, Container } from 'reactstrap';
 import { DraggableMarker } from './DraggableMarker';
 
-export const MapForm = ({ fromMapForm }) => {
-  const center = [45.75, 4.85];
+export const MapForm = ({ fromMapForm, walk }) => {
+  const center = walk
+    ? [walk.latlng.latitude, walk.latlng.longitude]
+    : [45.75, 4.85];
+
   const fromDraggable = (position) => {
     fromMapForm(position);
   };

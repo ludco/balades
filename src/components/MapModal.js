@@ -18,7 +18,7 @@ const MapModal = ({ isOpen, content, doPrimary, doSecondary }) => {
           Localiser le départ de la balade
         </ModalHeader>
         <ModalBody>
-          <MapForm fromMapForm={fromMapForm} />
+          <MapForm fromMapForm={fromMapForm} walk={content.walk} />
         </ModalBody>
         <ModalFooter>
           <Button color="primary" onClick={() => doPrimary(position)}>

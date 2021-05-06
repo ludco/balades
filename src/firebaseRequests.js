@@ -11,7 +11,10 @@ export const fetchWalks = async () => {
     const data = await response.get();
     const walksArray = [];
     data.docs.forEach((item) => {
-      const fetchedWalk = { id: item.id, ...item.data() };
+      const fetchedWalk = {
+        id: item.id,
+        ...item.data(),
+      };
       walksArray.push(fetchedWalk);
     });
     return walksArray;
@@ -64,7 +67,9 @@ export const getWalkDocument = async (id) => {
  */
 export const updateWalk = async ({ walkToUpdate, imageData }) => {
   try {
-    var walkRef = db.collection('balades').doc(`${walkToUpdate.id}`);
+    const walkId = walkToUpdate.id;
+    var walkRef = db.collection('balades').doc(`${walkId}`);
+    delete walkToUpdate.id;
     if (imageData) {
       walkRef.update({
         ...walkToUpdate,
@@ -75,7 +80,7 @@ export const updateWalk = async ({ walkToUpdate, imageData }) => {
         ...walkToUpdate,
       });
     }
-    return getWalkDocument(walkToUpdate.id);
+    return getWalkDocument(walkId);
   } catch (e) {
     console.error('Error updating walk', e);
   }

@@ -45,7 +45,6 @@ export const WalkForm = ({ history, settings }) => {
     }
   }, []);
   //Settings
-  console.log(settings);
   const difficulties = settings.find((setting) => setting.difficulty);
   const options = difficulties.difficulty.map((diff) => {
     return { key: diff, text: diff };
@@ -337,7 +336,11 @@ export const WalkForm = ({ history, settings }) => {
         {isMapOpen && (
           <MapModal
             isOpen={isMapOpen}
-            content={{ primary: 'Valider', secondary: 'Annuler' }}
+            content={{
+              primary: 'Valider',
+              secondary: 'Annuler',
+              walk: walkToUpdate ? walkToUpdate : null,
+            }}
             doPrimary={getPosition}
             doSecondary={() => setIsMapOpen(false)}
           />
