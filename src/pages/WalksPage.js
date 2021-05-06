@@ -7,6 +7,7 @@ import { Toast } from 'reactstrap';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { LocationMarker } from '../components/LocationMarker';
 import { setToastFalse } from '../actions';
+import { Bounds } from '../components/Bounds';
 
 export const WalksPage = ({ history }) => {
   const { walks, loading, user } = useSelector((state) => state);
@@ -42,6 +43,18 @@ export const WalksPage = ({ history }) => {
     return `${number} résultat${plural}`;
   };
 
+  const getAndSetBounds = (bounds) => {
+    const filtered = walks.filter((walk) => {
+      return (
+        walk.latlng &&
+        walk.latlng.latitude < bounds._northEast.lat &&
+        walk.latlng.latitude > bounds._southWest.lat &&
+        walk.latlng.longitude > bounds._southWest.lng &&
+        walk.latlng.longitude < bounds._northEast.lng
+      );
+    });
+    setWalksToDisplay(filtered);
+  };
   if (loading) {
     return (
       <Container className="full">
@@ -65,6 +78,7 @@ export const WalksPage = ({ history }) => {
             zoom={7}
             scrollWheelZoom={true}
           >
+            <Bounds getAndSetBounds={getAndSetBounds} />
             <TileLayer
               attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
               url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
