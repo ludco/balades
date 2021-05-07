@@ -27,7 +27,6 @@ export const WalksPage = ({ history }) => {
   useEffect(() => {
     if (toast.status) {
       setTimeout(() => {
-        //setToastVisible({ type: '', message: '', status: false });
         dispatch(setToastFalse());
       }, 2000);
     }
