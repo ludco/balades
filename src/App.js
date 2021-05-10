@@ -9,30 +9,31 @@ import { SignUpPage } from './pages/SignUpPage';
 import { WalksAddition } from './pages/WalkAddition';
 import { IconContext } from 'react-icons/lib';
 import { useDispatch, useSelector } from 'react-redux';
-import { doGetSettings, doGetWalks } from './actions';
+import { doGetWalks } from './actions';
+import SettingsProvider from './providers/SettingsProvider';
 
 function App() {
   const dispatch = useDispatch();
-  const { walks, settings } = useSelector((state) => state);
-
+  const walks = useSelector((state) => state.walks);
   useEffect(() => {
     if (!walks.length) dispatch(doGetWalks());
-    if (!settings.length) dispatch(doGetSettings());
   }, []);
 
   return (
     <IconContext.Provider value={{ className: 'react-icons' }}>
-      <UserProvider>
-        <Router>
-          <Header></Header>
-          <Switch>
-            <Route exact path="/add" component={WalksAddition} />
-            <Route exact path="/signin" component={SignInPage} />
-            <Route exact path="/signup" component={SignUpPage} />
-            <Route path="/" component={WalksPage} />
-          </Switch>
-        </Router>
-      </UserProvider>
+      <SettingsProvider>
+        <UserProvider>
+          <Router>
+            <Header></Header>
+            <Switch>
+              <Route exact path="/add" component={WalksAddition} />
+              <Route exact path="/signin" component={SignInPage} />
+              <Route exact path="/signup" component={SignUpPage} />
+              <Route path="/" component={WalksPage} />
+            </Switch>
+          </Router>
+        </UserProvider>
+      </SettingsProvider>
     </IconContext.Provider>
   );
 }

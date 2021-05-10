@@ -114,3 +114,87 @@ a {
     margin-bottom: 1vh;
   }
 }
+
+/* ---------------------------------------------------
+    SIDEBAR STYLE
+----------------------------------------------------- */
+.sidebar {
+  min-width: 200px;
+  max-width: 200px;
+  background: $primary;
+  color: $primary;
+  margin-left: -200px;
+  transition: all 0.5s;
+}
+
+.sidebar.is-open {
+  margin-left: 0;
+  transition: 0.5s;
+}
+
+.sidebar-header {
+  background: $secondary;
+}
+
+.sidebar-header h3 {
+  color: #fff;
+  padding: 1em;
+}
+
+.sidebar ul p {
+  color: #fff;
+  padding: 10px;
+}
+
+.sidebar .menu-open {
+  background: $primary;
+}
+
+.sidebar .nav-item:hover {
+  color: $tertiary;
+  background: #fff;
+}
+
+.sidebar .items-menu {
+  color: $primary;
+  background: $primary;
+}
+
+.sidebar li a.dropdown-toggle::after {
+  display: inline-flex;
+  position: relative;
+  left: 30%;
+  top: 10%;
+}
+
+.sidebar-header > span {
+  position: relative;
+  float: right;
+  margin: 0.5em;
+  font-size: 2rem;
+  cursor: pointer;
+  display: none;
+}
+.side-menu {
+  height: calc(100vh - 130px);
+  overflow-y: scroll;
+}
+
+.side-menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.side-menu::-webkit-scrollbar-thumb {
+  background: $tertiary;
+  border-radius: 3px;
+}
+
+.side-menu::-webkit-scrollbar-thumb:hover {
+  background: $tertiary;
+}
+
+.wrapper {
+  display: flex;
+  width: 100%;
+  align-items: stretch;
+}

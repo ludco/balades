@@ -1,13 +1,23 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect, useState } from 'react';
 import { WalksList } from '../components/WalksList';
-import { Container, Spinner, ToastBody, Alert, Row, Col } from 'reactstrap';
+import {
+  Container,
+  Spinner,
+  ToastBody,
+  Alert,
+  Row,
+  Col,
+  Button,
+} from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
 import { Toast } from 'reactstrap';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { LocationMarker } from '../components/LocationMarker';
 import { setToastFalse } from '../actions';
 import { Bounds } from '../components/Bounds';
+import SideBar from '../components/Sidebar';
+import { uniq } from 'lodash';
 
 export const WalksPage = ({ history }) => {
   const { walks, loading, user } = useSelector((state) => state);
@@ -21,7 +31,9 @@ export const WalksPage = ({ history }) => {
       setWalksToDisplay(walks);
     }
   }, [history.location.pathname, loading]);
-
+  //Sidebar
+  const [sidebarIsOpen, setSidebarOpen] = useState(false);
+  const toggleSidebar = () => setSidebarOpen(!sidebarIsOpen);
   //Toast
   const toast = useSelector((state) => state.toast);
   useEffect(() => {
@@ -52,7 +64,11 @@ export const WalksPage = ({ history }) => {
         walk.latlng.longitude < bounds._northEast.lng
       );
     });
-    setWalksToDisplay(filtered);
+    if (filtered.length) {
+      setWalksToDisplay(
+        uniq(filtered.filter((walk) => walksToDisplay.includes(walk)))
+      );
+    }
   };
   if (loading) {
     return (
@@ -62,38 +78,48 @@ export const WalksPage = ({ history }) => {
     );
   }
   return (
-    <Container>
-      <Toast isOpen={toast.status} className={`toast ${toast.type}`}>
-        <ToastBody>{toast.message}</ToastBody>
-      </Toast>
-      <Alert color="info" className="mt-2">
-        {showResultsNumber()}
-      </Alert>
-      <Row>
-        <Col lg="5">
-          <MapContainer
-            className="map"
-            center={[45.75, 4.85]}
-            zoom={7}
-            scrollWheelZoom={true}
-          >
-            <Bounds getAndSetBounds={getAndSetBounds} />
-            <TileLayer
-              attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+    <div className="App wrapper">
+      <SideBar toggle={toggleSidebar} isOpen={sidebarIsOpen} />
+      <Container className="mt-2">
+        <Toast isOpen={toast.status} className={`toast ${toast.type}`}>
+          <ToastBody>{toast.message}</ToastBody>
+        </Toast>
+        <Row>
+          <Col lg="1" md="2" sm="2" xs="3">
+            <Button className="mt-2" color="info" onClick={toggleSidebar}>
+              Filtres
+            </Button>
+          </Col>
+          <Col lg="11" md="10" sm="10" xs="9">
+            <Alert color="info">{showResultsNumber()}</Alert>
+          </Col>
+        </Row>
+        <Row>
+          <Col lg="5">
+            <MapContainer
+              className="map"
+              center={[45.75, 4.85]}
+              zoom={7}
+              scrollWheelZoom={true}
+            >
+              <Bounds getAndSetBounds={getAndSetBounds} />
+              <TileLayer
+                attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+                url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+              />
+              {walks.map((walk) => (
+                <LocationMarker key={walk.id} walk={walk} />
+              ))}
+            </MapContainer>
+          </Col>
+          <Col lg="7">
+            <WalksList
+              walks={user ? (walksToDisplay ? walksToDisplay : walks) : walks}
+              history={history}
             />
-            {walks.map((walk) => (
-              <LocationMarker key={walk.id} walk={walk} />
-            ))}
-          </MapContainer>
-        </Col>
-        <Col lg="7">
-          <WalksList
-            walks={user ? (walksToDisplay ? walksToDisplay : walks) : walks}
-            history={history}
-          />
-        </Col>
-      </Row>
-    </Container>
+          </Col>
+        </Row>
+      </Container>
+    </div>
   );
 };

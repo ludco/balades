@@ -88,7 +88,6 @@ function rootReducer(state = initialState, action) {
     return {
       ...state,
       settings: action.payload,
-      loading: false,
     };
   }
   if (action.type === SET_LOADING_TRUE) {
