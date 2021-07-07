@@ -116,3 +116,12 @@ a {
 #topo {
   cursor: pointer;
 }
+
+#listContainer {
+  position: relative;
+  height: auto;
+}
+#list {
+  height: 80vh;
+  overflow-y: scroll;
+}
