@@ -198,3 +198,10 @@ a {
   width: 100%;
   align-items: stretch;
 }
+.filter-button:focus {
+  box-shadow: 0 0 0 0;
+}
+.filter-button.btn-primary:focus {
+  background-color: $primary;
+  border: $primary;
+}

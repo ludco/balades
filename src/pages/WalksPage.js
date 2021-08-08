@@ -20,15 +20,18 @@ import SideBar from '../components/Sidebar';
 import { uniq } from 'lodash';
 
 export const WalksPage = ({ history }) => {
-  const { walks, loading, user } = useSelector((state) => state);
+  const { walks, loading, user, filteredWalks } = useSelector((state) => state);
+  console.log('filteredWalks iciiiiii', filteredWalks);
   const dispatch = useDispatch();
   // Sorting
   const [walksToDisplay, setWalksToDisplay] = useState();
   useEffect(() => {
     if (history.location?.pathname === '/my-walks') {
-      setWalksToDisplay(walks.filter((walk) => walk.userId === user.uid));
+      setWalksToDisplay(
+        filteredWalks.filter((walk) => walk.userId === user.uid)
+      );
     } else {
-      setWalksToDisplay(walks);
+      setWalksToDisplay(filteredWalks);
     }
   }, [history.location.pathname, loading]);
   //Sidebar
@@ -46,16 +49,16 @@ export const WalksPage = ({ history }) => {
 
   const showResultsNumber = () => {
     const number = user
-      ? walksToDisplay
+      ? walksToDisplay.length
         ? walksToDisplay.length
-        : walks.length
-      : walks.length;
+        : filteredWalks.length
+      : filteredWalks.length;
     const plural = number < 2 ? '' : 's';
     return `${number} résultat${plural}`;
   };
 
   const getAndSetBounds = (bounds) => {
-    const filtered = walks.filter((walk) => {
+    const filtered = filteredWalks.filter((walk) => {
       return (
         walk.latlng &&
         walk.latlng.latitude < bounds._northEast.lat &&
@@ -107,14 +110,20 @@ export const WalksPage = ({ history }) => {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {walks.map((walk) => (
+              {filteredWalks.map((walk) => (
                 <LocationMarker key={walk.id} walk={walk} />
               ))}
             </MapContainer>
           </Col>
           <Col lg="7">
             <WalksList
-              walks={user ? (walksToDisplay ? walksToDisplay : walks) : walks}
+              walks={
+                user
+                  ? walksToDisplay
+                    ? walksToDisplay
+                    : filteredWalks
+                  : filteredWalks
+              }
               history={history}
             />
           </Col>

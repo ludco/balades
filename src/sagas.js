@@ -1,4 +1,4 @@
-import { takeEvery, call, put, all } from 'redux-saga/effects';
+import { takeEvery, call, put, all, takeLatest } from 'redux-saga/effects';
 import {
   CREATE_WALK,
   GET_USER,
@@ -14,6 +14,9 @@ import {
   LOAD_USER,
   LOAD_SETTINGS,
   CREATE_USER,
+  FILTER_WALKS,
+  RENDERFILTER_WALK,
+  RENDERFILTER_WALKS,
 } from './constants/action-types';
 import {
   createWalk,
@@ -34,6 +37,7 @@ export default function* rootSaga() {
     takeEvery(GET_USER, getCurrentUser),
     takeEvery(CREATE_USER, addUser),
     takeEvery(GET_SETTINGS, getSettings),
+    takeLatest(FILTER_WALKS, filterWalks),
   ]);
 }
 
@@ -81,6 +85,36 @@ function* removeWalk(action) {
   } catch (e) {
     console.error('Remove Walk API error');
     yield put({ type: API_ERRORED, payload: e });
+  }
+}
+
+function* filterWalks(action) {
+  const { walks, filters } = action.payload;
+  try {
+    const isShownBySector = (walk) => {
+      const sectorFilters = filters.filter(
+        (filter) => filter.group === 'sector'
+      );
+
+      if (!sectorFilters.length) return true;
+      return sectorFilters.some((filter) => filter.fnc(walk));
+    };
+
+    const isShownByDifficulty = (walk) => {
+      const diffFilters = filters.filter(
+        (filter) => filter.group === 'difficulty'
+      );
+      if (!diffFilters.length) return true;
+      return diffFilters.some((filter) => filter.fnc(walk));
+    };
+    const filteredWalks = walks.filter((walk) => {
+      const showBySector = isShownBySector(walk);
+      const showByDifficulty = isShownByDifficulty(walk);
+      return showBySector && showByDifficulty;
+    });
+    yield put({ type: RENDERFILTER_WALKS, payload: filteredWalks });
+  } catch (e) {
+    console.error('Filter error');
   }
 }
 

@@ -3,6 +3,7 @@ import {
   CREATE_USER,
   CREATE_WALK,
   EDIT_WALK,
+  FILTER_WALKS,
   GET_SETTINGS,
   GET_USER,
   GET_WALKS,
@@ -24,3 +25,4 @@ export const doGetSettings = createAction(GET_SETTINGS);
 export const showWarningToast = createAction(SET_WARNING_TOAST);
 export const setToastFalse = createAction(SET_TOAST_TO_FALSE);
 export const setLoadingTrue = createAction(SET_LOADING_TRUE);
+export const doFilterWalks = createAction(FILTER_WALKS);
