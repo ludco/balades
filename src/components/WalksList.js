@@ -1,14 +1,12 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
+import React, { useContext } from 'react';
+import { FiltersContext } from '../providers/FiltersProvider';
 import { Walk } from './Walk';
 
 export const WalksList = ({ walks, history }) => {
-  const filteredWalks = useSelector((state) => state.filteredWalks);
-  const walksToDisplay = filteredWalks.length ? filteredWalks : walks;
-  console.log('filteredWalks', filteredWalks);
+  const filtersCtxt = useContext(FiltersContext);
   return (
     <div>
-      {walksToDisplay.map((walk) => {
+      {filtersCtxt.filteredWalks.map((walk) => {
         return <Walk key={walk.name} walk={walk} history={history} />;
       })}
     </div>

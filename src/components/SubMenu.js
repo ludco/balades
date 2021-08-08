@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import classNames from 'classnames';
 import { Button, Collapse, NavItem, NavLink, Row } from 'reactstrap';
-import { Link } from 'react-router-dom';
 
 const SubMenu = ({
   title,
@@ -14,15 +13,17 @@ const SubMenu = ({
   const [collapsed, setCollapsed] = useState(true);
   const toggle = () => setCollapsed(!collapsed);
 
-  const filterExists = (name, group) => {
+  // check if filter already exist
+  const filterExists = (name) => {
     return (
       filters.find((f) => f.name === name && f.group === group) !== undefined
     );
   };
 
-  const toggleFilter = (name, group, fnc) => {
+  // handle apply or remove filter
+  const toggleFilter = (name, fnc) => {
     const args = [name, group, fnc];
-    if (filterExists(name, group)) {
+    if (filterExists(name)) {
       doRemoveFilter.apply(null, args);
     } else {
       doAddFilter.apply(null, args);
@@ -48,14 +49,12 @@ const SubMenu = ({
           className={classNames('items-menu', { 'mb-1': !collapsed })}
         >
           {items.map((item, index) => (
-            <Row>
+            <Row key={index}>
               <Button
                 size="sm"
                 className="mt-1 ml-4 filter-button"
-                color={filterExists(item, group) ? 'secondary' : 'primary'}
-                onClick={() =>
-                  toggleFilter(item, group, (w) => w[group] === item)
-                }
+                color={filterExists(item) ? 'secondary' : 'primary'}
+                onClick={() => toggleFilter(item, (w) => w[group] === item)}
               >
                 {item}
               </Button>

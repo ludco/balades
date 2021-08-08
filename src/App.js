@@ -9,20 +9,22 @@ import { SignUpPage } from './pages/SignUpPage';
 import { WalksAddition } from './pages/WalkAddition';
 import { IconContext } from 'react-icons/lib';
 import { useDispatch, useSelector } from 'react-redux';
-import { doGetWalks } from './actions';
-import SettingsProvider from './providers/SettingsProvider';
+import { doGetSettings, doGetWalks } from './actions';
+import FiltersProvider from './providers/FiltersProvider';
 
 function App() {
   const dispatch = useDispatch();
   const walks = useSelector((state) => state.walks);
+  const storeSettings = useSelector((state) => state.settings);
   useEffect(() => {
     if (!walks.length) dispatch(doGetWalks());
+    if (!storeSettings.length) dispatch(doGetSettings());
   }, []);
 
   return (
     <IconContext.Provider value={{ className: 'react-icons' }}>
-      <SettingsProvider>
-        <UserProvider>
+      <UserProvider>
+        <FiltersProvider>
           <Router>
             <Header></Header>
             <Switch>
@@ -32,8 +34,8 @@ function App() {
               <Route path="/" component={WalksPage} />
             </Switch>
           </Router>
-        </UserProvider>
-      </SettingsProvider>
+        </FiltersProvider>
+      </UserProvider>
     </IconContext.Provider>
   );
 }

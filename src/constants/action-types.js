@@ -8,7 +8,6 @@ export const LOAD_SETTINGS = 'LOAD_SETTINGS';
 export const SET_LOADING_TRUE = 'SET_LOADING_TRUE';
 export const SET_WARNING_TOAST = 'SET_WARNING_TOAST';
 export const SET_TOAST_TO_FALSE = 'SET_TOAST_TO_FALSE';
-export const FILTER_WALKS = 'FILTER_WALKS';
 
 //SAGAS call
 export const GET_USER = 'GET_USER';
@@ -19,4 +18,3 @@ export const EDIT_WALK = 'EDIT_WALK';
 export const REMOVE_WALK = 'REMOVE_WALK';
 export const GET_SETTINGS = 'GET_SETTINGS';
 export const API_ERRORED = 'API_ERRORED';
-export const RENDERFILTER_WALKS = 'RENDERFILTER_WALKS';

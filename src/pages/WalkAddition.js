@@ -1,18 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useContext } from 'react';
+import React from 'react';
+import { useSelector } from 'react-redux';
 
 import { Container, Spinner } from 'reactstrap';
 import { WalkForm } from '../components/WalkForm';
-import { SettingsContext } from '../providers/SettingsProvider';
 
 export const WalksAddition = ({ history }) => {
-  const settingsCtxt = useContext(SettingsContext);
-  if (!settingsCtxt.settings.length) {
+  const storeSettings = useSelector((state) => state.settings);
+  if (!storeSettings.length) {
     return (
       <Container className="full">
         <Spinner className="spinner" color="primary" />
       </Container>
     );
   }
-  return <WalkForm history={history} settings={settingsCtxt.settings} />;
+  return <WalkForm history={history} settings={storeSettings} />;
 };

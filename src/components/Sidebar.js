@@ -2,38 +2,43 @@ import React, { useContext, useEffect, useState } from 'react';
 import { Nav } from 'reactstrap';
 import classNames from 'classnames';
 import SubMenu from './SubMenu';
-import { SettingsContext } from '../providers/SettingsProvider';
-import { useDispatch, useSelector } from 'react-redux';
-import { doFilterWalks } from '../actions';
+import { FiltersContext } from '../providers/FiltersProvider';
+import { useSelector } from 'react-redux';
 
 const SideBar = ({ isOpen, toggle }) => {
-  const walks = useSelector((state) => state.walks);
-  const dispatch = useDispatch();
-  const settingsCtxt = useContext(SettingsContext);
-  const difficulties = settingsCtxt.settings.find(
-    (setting) => setting.difficulty
-  );
-  const sectors = settingsCtxt.settings.find((setting) => setting.sector);
-  const difficultiesSubMenu = difficulties.difficulty;
-  const sectorsSubMenu = sectors.sector;
-
-  const [filters, setFilters] = useState([]);
+  const filtersCtxt = useContext(FiltersContext);
+  const storeSettings = useSelector((state) => state.settings);
+  const difficulties = storeSettings.find((setting) => setting.difficulty);
+  const sectors = storeSettings.find((setting) => setting.sector);
+  const [settingsMenus, setSettingsMenus] = useState({});
 
   useEffect(() => {
-    dispatch(doFilterWalks({ walks: walks, filters: filters }));
-  }, [filters.length]);
+    if (difficulties && sectors)
+      setSettingsMenus({
+        diff: difficulties.difficulty,
+        sector: sectors.sector,
+      });
+  }, [storeSettings.length]);
 
+  const subMenus = [
+    { title: 'par secteur', items: settingsMenus.sector, group: 'sector' },
+    { title: 'par dificulté', items: settingsMenus.diff, group: 'difficulty' },
+  ];
+
+  // Add a filter object {name, group, fn} in filters context
   const addFilter = (name, group, fnc) => {
-    setFilters((currentFilters) => [...currentFilters, { name, group, fnc }]);
+    filtersCtxt.setFilters((currentFilters) => [
+      ...currentFilters,
+      { name, group, fnc },
+    ]);
   };
 
+  // remove filter if exist
   const removeFilter = (name, group) => {
-    setFilters((currentFilters) =>
+    filtersCtxt.setFilters((currentFilters) =>
       currentFilters.filter((f) => !(f.name === name && f.group === group))
     );
   };
-
-  console.log('filters', filters);
 
   return (
     <div className={classNames('sidebar', { 'is-open': isOpen })}>
@@ -45,22 +50,17 @@ const SideBar = ({ isOpen, toggle }) => {
       </div>
       <div className="side-menu">
         <Nav vertical className="list-unstyled pb-3">
-          <SubMenu
-            title="Par secteur"
-            group="sector"
-            items={sectorsSubMenu}
-            filters={filters}
-            doRemoveFilter={removeFilter}
-            doAddFilter={addFilter}
-          />
-          <SubMenu
-            title="Par difficulté"
-            group="difficulty"
-            items={difficultiesSubMenu}
-            filters={filters}
-            doRemoveFilter={removeFilter}
-            doAddFilter={addFilter}
-          />
+          {subMenus.map((subMenu, index) => (
+            <SubMenu
+              key={index}
+              title={subMenu.title}
+              group={subMenu.group}
+              items={subMenu.items}
+              filters={filtersCtxt.filters}
+              doRemoveFilter={removeFilter}
+              doAddFilter={addFilter}
+            />
+          ))}
         </Nav>
       </div>
     </div>

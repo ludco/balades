@@ -1,5 +1,5 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import React, { useEffect, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { WalksList } from '../components/WalksList';
 import {
   Container,
@@ -9,31 +9,21 @@ import {
   Row,
   Col,
   Button,
+  Toast,
 } from 'reactstrap';
 import { useDispatch, useSelector } from 'react-redux';
-import { Toast } from 'reactstrap';
 import { MapContainer, TileLayer } from 'react-leaflet';
 import { LocationMarker } from '../components/LocationMarker';
 import { setToastFalse } from '../actions';
 import { Bounds } from '../components/Bounds';
 import SideBar from '../components/Sidebar';
-import { uniq } from 'lodash';
+import { FiltersContext } from '../providers/FiltersProvider';
 
 export const WalksPage = ({ history }) => {
-  const { walks, loading, user, filteredWalks } = useSelector((state) => state);
-  console.log('filteredWalks iciiiiii', filteredWalks);
+  const { walks, loading } = useSelector((state) => state);
   const dispatch = useDispatch();
-  // Sorting
-  const [walksToDisplay, setWalksToDisplay] = useState();
-  useEffect(() => {
-    if (history.location?.pathname === '/my-walks') {
-      setWalksToDisplay(
-        filteredWalks.filter((walk) => walk.userId === user.uid)
-      );
-    } else {
-      setWalksToDisplay(filteredWalks);
-    }
-  }, [history.location.pathname, loading]);
+  const filtersCtxt = useContext(FiltersContext);
+
   //Sidebar
   const [sidebarIsOpen, setSidebarOpen] = useState(false);
   const toggleSidebar = () => setSidebarOpen(!sidebarIsOpen);
@@ -47,18 +37,16 @@ export const WalksPage = ({ history }) => {
     }
   }, [walks.length]);
 
+  // Handle result number
   const showResultsNumber = () => {
-    const number = user
-      ? walksToDisplay.length
-        ? walksToDisplay.length
-        : filteredWalks.length
-      : filteredWalks.length;
+    const number = filtersCtxt.filteredWalks.length;
     const plural = number < 2 ? '' : 's';
     return `${number} résultat${plural}`;
   };
 
+  // filter by map bounds
   const getAndSetBounds = (bounds) => {
-    const filtered = filteredWalks.filter((walk) => {
+    const mapFiltered = walks.filter((walk) => {
       return (
         walk.latlng &&
         walk.latlng.latitude < bounds._northEast.lat &&
@@ -67,12 +55,17 @@ export const WalksPage = ({ history }) => {
         walk.latlng.longitude < bounds._northEast.lng
       );
     });
-    if (filtered.length) {
-      setWalksToDisplay(
-        uniq(filtered.filter((walk) => walksToDisplay.includes(walk)))
-      );
-    }
+    filtersCtxt.setBoundedWalks(mapFiltered);
+    filtersCtxt.setFilters((prev) => [
+      ...prev,
+      {
+        name: 'map',
+        group: 'map',
+        fnc: (w, mapW) => mapW.includes(w),
+      },
+    ]);
   };
+
   if (loading) {
     return (
       <Container className="full">
@@ -110,22 +103,13 @@ export const WalksPage = ({ history }) => {
                 attribution='&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
                 url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
               />
-              {filteredWalks.map((walk) => (
+              {filtersCtxt.filteredWalks.map((walk) => (
                 <LocationMarker key={walk.id} walk={walk} />
               ))}
             </MapContainer>
           </Col>
           <Col lg="7">
-            <WalksList
-              walks={
-                user
-                  ? walksToDisplay
-                    ? walksToDisplay
-                    : filteredWalks
-                  : filteredWalks
-              }
-              history={history}
-            />
+            <WalksList walks={filtersCtxt.filteredWalks} history={history} />
           </Col>
         </Row>
       </Container>

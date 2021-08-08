@@ -10,13 +10,11 @@ import {
   DELETE_WALK,
   SET_TOAST_TO_FALSE,
   API_ERRORED,
-  RENDERFILTER_WALKS,
 } from './constants/action-types';
 
 const initialState = {
   user: null,
   walks: [],
-  filteredWalks: [],
   settings: [],
   loading: true,
   toast: { status: false, type: '', message: '' },
@@ -84,13 +82,6 @@ function rootReducer(state = initialState, action) {
         type: 'success',
         message: 'Balade supprimée avec succés !',
       },
-    };
-  }
-  if (action.type === RENDERFILTER_WALKS) {
-    return {
-      ...state,
-      filteredWalks: action.payload,
-      loading: false,
     };
   }
   if (action.type === LOAD_SETTINGS) {

@@ -16,10 +16,12 @@ import { auth } from '../firebase.config';
 import { Link } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
 import { doLogoutUser } from '../actions';
+import { FiltersContext } from '../providers/FiltersProvider';
 
 export const Header = ({ history }) => {
   const dispatch = useDispatch();
   const userCtxt = useContext(UserContext);
+  const filtersCtxt = useContext(FiltersContext);
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);
@@ -31,7 +33,11 @@ export const Header = ({ history }) => {
         <NavbarToggler onClick={toggle} />
         <Collapse isOpen={isOpen} navbar>
           <Nav className="mr-auto" navbar>
-            <NavItem>
+            <NavItem
+              onClick={() => {
+                filtersCtxt.setFilters([]);
+              }}
+            >
               <Link to="/">Toutes les balades</Link>
             </NavItem>
           </Nav>
@@ -42,7 +48,18 @@ export const Header = ({ history }) => {
                   {userCtxt.user.displayName}
                 </DropdownToggle>
                 <DropdownMenu right>
-                  <DropdownItem>
+                  <DropdownItem
+                    onClick={() => {
+                      filtersCtxt.setFilters((prev) => [
+                        ...prev,
+                        {
+                          name: userCtxt.user.uid,
+                          group: 'user',
+                          fnc: (w, id) => w.userId === id,
+                        },
+                      ]);
+                    }}
+                  >
                     <Link to="/my-walks" className="link">
                       Mes balades
                     </Link>
