@@ -1,16 +1,16 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react';
-import { Header } from './components/Header';
-import { WalksPage } from './pages/WalksPage';
-import { SignInPage } from './pages/SignInPage';
-import { Route, Switch, BrowserRouter as Router } from 'react-router-dom';
-import UserProvider from './providers/UserProvider';
-import { SignUpPage } from './pages/SignUpPage';
-import { WalksAddition } from './pages/WalkAddition';
 import { IconContext } from 'react-icons/lib';
 import { useDispatch, useSelector } from 'react-redux';
+import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
 import { doGetSettings, doGetWalks } from './actions';
+import { Header } from './components/Header';
+import { SignInPage } from './pages/SignInPage';
+import { SignUpPage } from './pages/SignUpPage';
+import { WalksAddition } from './pages/WalkAddition';
 import FiltersProvider from './providers/FiltersProvider';
+import { WalksPage } from './pages/WalksPage';
+import UserProvider from './providers/UserProvider';
 
 function App() {
   const dispatch = useDispatch();

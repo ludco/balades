@@ -205,3 +205,15 @@ a {
   background-color: $primary;
   border: $primary;
 }
+#topo {
+  cursor: pointer;
+}
+
+#listContainer {
+  position: relative;
+  height: auto;
+}
+#list {
+  height: 80vh;
+  overflow-y: scroll;
+}

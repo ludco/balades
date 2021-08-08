@@ -1,23 +1,15 @@
 import React, { useContext, useState } from 'react';
-import {
-  Row,
-  Col,
-  Card,
-  CardBody,
-  CardTitle,
-  CardSubtitle,
-  CardText,
-  Button,
-} from 'reactstrap';
+import { BiEdit, BiTrash } from 'react-icons/bi';
 import { BsStopwatch } from 'react-icons/bs';
 import { MdPlace } from 'react-icons/md';
-import { BiEdit, BiTrash } from 'react-icons/bi';
-import defaut from '../assets/defaut.jpg';
-import AlertModal from './AlertModal';
-import { deletePic } from '../firebaseRequests';
 import { useDispatch } from 'react-redux';
-import { UserContext } from '../providers/UserProvider';
+import { Button, Card, CardBody, CardSubtitle, CardText, CardTitle, Col, Row } from 'reactstrap';
+
 import { doRemoveWalk, showWarningToast } from '../actions';
+import defaut from '../assets/defaut.jpg';
+import { deletePic } from '../firebaseRequests';
+import { UserContext } from '../providers/UserProvider';
+import AlertModal from './AlertModal';
 
 export const Walk = ({ walk, history }) => {
   const dispatch = useDispatch();
@@ -46,24 +38,14 @@ export const Walk = ({ walk, history }) => {
   };
 
   return (
-    <Card>
+    <Card onClick={() => history.push('/detail', walk)}>
       <CardBody>
         <Row>
           <Col lg="5" md="4" sm="4" xs="12">
             {walk.pics[0]?.url ? (
-              <img
-                className="pic"
-                src={walk.pics[0]?.url}
-                alt={`${walk.name} `}
-              />
+              <img className="pic" src={walk.pics[0]?.url} alt={`${walk.name} `} />
             ) : (
-              <img
-                className="pic"
-                src={defaut}
-                alt={'rando'}
-                width="100"
-                height="100"
-              />
+              <img className="pic" src={defaut} alt={'rando'} width="100" height="100" />
             )}
           </Col>
           <Col lg="7" md="8" sm="8" xs="12">
@@ -73,10 +55,7 @@ export const Walk = ({ walk, history }) => {
               </Col>
               {walk.userId === userCtxt.user?.uid && (
                 <Col className="text-right" md="3">
-                  <Button
-                    color="link"
-                    onClick={() => history.push('/add', walk)}
-                  >
+                  <Button color="link" onClick={() => history.push('/add', walk)}>
                     <BiEdit />
                   </Button>
                   <Button color="link" onClick={() => setIsOpen(true)}>
@@ -100,14 +79,7 @@ export const Walk = ({ walk, history }) => {
           </Col>
         </Row>
       </CardBody>
-      {isOpen && (
-        <AlertModal
-          isOpen={isOpen}
-          content={deletePicModal}
-          doPrimary={() => deleteWalk()}
-          doSecondary={() => setIsOpen(false)}
-        />
-      )}
+      {isOpen && <AlertModal isOpen={isOpen} content={deletePicModal} doPrimary={() => deleteWalk()} doSecondary={() => setIsOpen(false)} />}
     </Card>
   );
 };
